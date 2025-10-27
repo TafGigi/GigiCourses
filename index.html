@@ -81,6 +81,20 @@
       'Entretien': 'Sparkles'
     };
 
+    const GigiLogo = () => (
+      <svg width="80" height="80" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 40C50 35 55 30 60 30L140 30C145 30 150 35 150 40L150 70L50 70L50 40Z" fill="#6B8E9D"/>
+        <ellipse cx="100" cy="70" rx="50" ry="35" fill="#6B8E9D"/>
+        <path d="M70 85L70 105C70 105 75 100 80 100C85 100 85 105 85 105L85 85" stroke="#1E3A47" strokeWidth="5" strokeLinecap="round" fill="none"/>
+        <path d="M115 85L115 105C115 105 120 100 125 100C130 100 130 105 130 105L130 85" stroke="#1E3A47" strokeWidth="5" strokeLinecap="round" fill="none"/>
+        <line x1="40" y1="110" x2="55" y2="110" stroke="#1E3A47" strokeWidth="5" strokeLinecap="round"/>
+        <line x1="145" y1="110" x2="160" y2="110" stroke="#1E3A47" strokeWidth="5" strokeLinecap="round"/>
+        <ellipse cx="85" cy="95" rx="7" ry="5" fill="#1E3A47"/>
+        <ellipse cx="115" cy="95" rx="7" ry="5" fill="#1E3A47"/>
+        <path d="M95 125 Q97 128 100 128 Q103 128 105 125" stroke="#1E3A47" strokeWidth="3" fill="none"/>
+      </svg>
+    );
+
     function ShoppingListApp() {
       const [stores, setStores] = useState([]);
       const [products, setProducts] = useState([]);
@@ -133,8 +147,8 @@
           <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 pb-8">
             <div className="max-w-4xl mx-auto">
               <div className="flex flex-col items-center justify-center mb-8">
-                    <img src="gigi.png" alt="Description de l'image" width="125"/>
-                <h1 className="text-3xl font-bold text-gray-800 mt-4">Mes courses</h1>
+                <GigiLogo />
+                <h1 className="text-3xl font-bold text-gray-800 mt-4">Mes Courses</h1>
               </div>
               
               <div className="mb-8">
