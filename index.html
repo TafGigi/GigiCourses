@@ -42,6 +42,7 @@
 
       #root {
         min-height: 100vh;
+        padding-bottom: 80px;
       }
 
       .dragging {
@@ -50,6 +51,25 @@
 
       .drag-over {
         border-top: 3px solid #4f46e5;
+      }
+
+      .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        border-top: 1px solid #e5e7eb;
+        z-index: 50;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+      }
+
+      .nav-item {
+        transition: all 0.2s;
+      }
+
+      .nav-item.active {
+        color: #4f46e5;
       }
     </style>
 
@@ -371,6 +391,46 @@
             <circle cx="15" cy="19" r="1" />
           </svg>
         ),
+        ChefHat: () => (
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z" />
+            <line x1="6" y1="17" x2="18" y2="17" />
+          </svg>
+        ),
+        HelpCircle: () => (
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+        ),
+        Search: () => (
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
+        ),
       };
 
       const AISLE_ICONS = {
@@ -390,21 +450,33 @@
         const [stores, setStores] = useState([]);
         const [products, setProducts] = useState([]);
         const [aisles, setAisles] = useState([
-          "Fruits et Légumes",
-          "Boucherie",
+          "Boulangerie",
+          "Fruits Et Légumes",
+          "Fromagerie",
           "Poissonnerie",
-          "Crémerie",
-          "Épicerie Salée",
-          "Épicerie Sucrée",
-          "Surgelés",
+          "Charcuterie",
+          "Boucherie",
           "Boissons",
+          "Petit Déjeuner",
+          "Apéritif",
+          "Pâtes, Riz",
+          "Confiserie Et Biscuits",
           "Hygiène",
+          "Animalerie",
           "Entretien",
+          "Plats Préparés",
+          "Pain Industriel",
+          "Crème Et Beurre",
+          "Surgelés",
+          "Compotes Et PQ"
         ]);
         const [lists, setLists] = useState([]);
+        const [recipes, setRecipes] = useState([]);
+        const [tab, setTab] = useState("lists");
         const [view, setView] = useState("home");
         const [currentStore, setCurrentStore] = useState(null);
         const [currentList, setCurrentList] = useState(null);
+        const [currentRecipe, setCurrentRecipe] = useState(null);
         const [editingStore, setEditingStore] = useState(null);
         const [loading, setLoading] = useState(true);
 
@@ -413,11 +485,84 @@
           const savedProducts = localStorage.getItem("products");
           const savedAisles = localStorage.getItem("aisles");
           const savedLists = localStorage.getItem("lists");
+          const savedRecipes = localStorage.getItem("recipes");
 
           if (savedStores) setStores(JSON.parse(savedStores));
-          if (savedProducts) setProducts(JSON.parse(savedProducts));
+          
+          // Produits par défaut si aucun produit sauvegardé
+          if (savedProducts) {
+            setProducts(JSON.parse(savedProducts));
+          } else {
+            const defaultProducts = [
+              { id: 1, name: 'Baguette', aisle: 'Boulangerie' },
+              { id: 2, name: 'Pain', aisle: 'Boulangerie' },
+              { id: 3, name: 'Bananes', aisle: 'Fruits Et Légumes' },
+              { id: 4, name: 'Oranges', aisle: 'Fruits Et Légumes' },
+              { id: 5, name: 'Champignons', aisle: 'Fruits Et Légumes' },
+              { id: 6, name: 'Tomates', aisle: 'Fruits Et Légumes' },
+              { id: 7, name: 'Oignons', aisle: 'Fruits Et Légumes' },
+              { id: 8, name: 'Pommes De Terre', aisle: 'Fruits Et Légumes' },
+              { id: 9, name: 'Cheddar', aisle: 'Fromagerie' },
+              { id: 10, name: 'Parmesan', aisle: 'Fromagerie' },
+              { id: 11, name: 'Reblochon', aisle: 'Fromagerie' },
+              { id: 12, name: 'Mozzarella', aisle: 'Fromagerie' },
+              { id: 13, name: 'Saumon', aisle: 'Poissonnerie' },
+              { id: 14, name: 'Truite', aisle: 'Poissonnerie' },
+              { id: 15, name: 'Jambon Blanc', aisle: 'Charcuterie' },
+              { id: 16, name: 'Lardons', aisle: 'Charcuterie' },
+              { id: 17, name: 'Chiffonnade', aisle: 'Charcuterie' },
+              { id: 18, name: 'Jambon Sec', aisle: 'Charcuterie' },
+              { id: 19, name: 'Blanc De Poulet', aisle: 'Boucherie' },
+              { id: 20, name: 'Viande Hachée', aisle: 'Boucherie' },
+              { id: 21, name: 'Steaks Hachés', aisle: 'Boucherie' },
+              { id: 22, name: 'Bière', aisle: 'Boissons' },
+              { id: 23, name: 'Ice Tea', aisle: 'Boissons' },
+              { id: 24, name: 'Café', aisle: 'Petit Déjeuner' },
+              { id: 25, name: 'Confiture', aisle: 'Petit Déjeuner' },
+              { id: 26, name: 'Café Noisette', aisle: 'Petit Déjeuner' },
+              { id: 27, name: 'Nutella', aisle: 'Petit Déjeuner' },
+              { id: 28, name: 'Chips', aisle: 'Apéritif' },
+              { id: 29, name: 'Vin Blanc', aisle: 'Apéritif' },
+              { id: 30, name: 'Ricard', aisle: 'Apéritif' },
+              { id: 31, name: 'Pâtes', aisle: 'Pâtes, Riz' },
+              { id: 32, name: 'Riz', aisle: 'Pâtes, Riz' },
+              { id: 33, name: 'Bonbons', aisle: 'Confiserie Et Biscuits' },
+              { id: 34, name: 'Kinder Bueno', aisle: 'Confiserie Et Biscuits' },
+              { id: 35, name: 'Goûter Pocket', aisle: 'Confiserie Et Biscuits' },
+              { id: 36, name: 'Petits Écoliers', aisle: 'Confiserie Et Biscuits' },
+              { id: 37, name: 'Dentifrice', aisle: 'Hygiène' },
+              { id: 38, name: 'Shampooing', aisle: 'Hygiène' },
+              { id: 39, name: 'Gel Douche', aisle: 'Hygiène' },
+              { id: 40, name: 'Rasoirs', aisle: 'Hygiène' },
+              { id: 41, name: 'Déodorant', aisle: 'Hygiène' },
+              { id: 42, name: 'Cire', aisle: 'Hygiène' },
+              { id: 43, name: 'Savon', aisle: 'Hygiène' },
+              { id: 44, name: 'Pâté Pour Chat', aisle: 'Animalerie' },
+              { id: 45, name: 'Litière', aisle: 'Animalerie' },
+              { id: 46, name: 'Sacs Poubelle 30L', aisle: 'Entretien' },
+              { id: 47, name: 'Sacs Poubelle 50L', aisle: 'Entretien' },
+              { id: 48, name: 'Lessive', aisle: 'Entretien' },
+              { id: 49, name: 'Produit WC', aisle: 'Entretien' },
+              { id: 50, name: 'Produit Vaisselle', aisle: 'Entretien' },
+              { id: 51, name: 'Éponge', aisle: 'Entretien' },
+              { id: 52, name: 'Pizza', aisle: 'Plats Préparés' },
+              { id: 53, name: 'Flammekueche', aisle: 'Plats Préparés' },
+              { id: 54, name: 'Pain De Mie', aisle: 'Pain Industriel' },
+              { id: 55, name: 'Pain À Burger', aisle: 'Pain Industriel' },
+              { id: 56, name: 'Pain Pour Hot Dog', aisle: 'Pain Industriel' },
+              { id: 57, name: 'Crème', aisle: 'Crème Et Beurre' },
+              { id: 58, name: 'Beurre', aisle: 'Crème Et Beurre' },
+              { id: 59, name: 'Mars Glacé', aisle: 'Surgelés' },
+              { id: 60, name: 'Frites', aisle: 'Surgelés' },
+              { id: 61, name: 'Compotes', aisle: 'Compotes Et PQ' },
+              { id: 62, name: 'PQ', aisle: 'Compotes Et PQ' }
+            ];
+            setProducts(defaultProducts);
+          }
+          
           if (savedAisles) setAisles(JSON.parse(savedAisles));
           if (savedLists) setLists(JSON.parse(savedLists));
+          if (savedRecipes) setRecipes(JSON.parse(savedRecipes));
 
           setLoading(false);
         }, []);
@@ -436,6 +581,9 @@
         useEffect(() => {
           if (!loading) localStorage.setItem("lists", JSON.stringify(lists));
         }, [lists, loading]);
+        useEffect(() => {
+          if (!loading) localStorage.setItem("recipes", JSON.stringify(recipes));
+        }, [recipes, loading]);
 
         const getAisleIcon = (aisleName) => {
           const iconName = AISLE_ICONS[aisleName] || "Store";
@@ -459,6 +607,439 @@
           }
         };
 
+        // ===== COMPOSANTS POUR CHAQUE ONGLET =====
+        
+        // Onglet Listes
+        const ListsTab = () => (
+          <section className="mb-10">
+            <div className="flex justify-between items-center mb-5">
+              <h2 className="text-2xl font-semibold text-gray-700">Mes Listes</h2>
+            </div>
+
+            {stores.length === 0 ? (
+              <div className="bg-white rounded-xl p-8 text-center shadow-sm">
+                <p className="text-gray-600 mb-4">
+                  Créez d'abord un magasin dans l'onglet Magasins
+                </p>
+              </div>
+            ) : (
+              <>
+                {stores.length > 0 && (
+                  <div className="bg-white rounded-xl p-5 shadow-sm mb-6">
+                    <h3 className="font-semibold text-gray-700 mb-4">
+                      Créer une nouvelle liste
+                    </h3>
+                    <div className="grid gap-3">
+                      {stores.map((store) => (
+                        <button
+                          key={store.id}
+                          onClick={() => {
+                            setCurrentStore(store);
+                            setView("createList");
+                          }}
+                          className="w-full p-4 bg-gradient-to-r from-indigo-50 to-blue-50 hover:from-indigo-100 hover:to-blue-100 rounded-lg text-left flex items-center justify-between transition group"
+                        >
+                          <span className="font-medium text-indigo-700 group-hover:text-indigo-800">
+                            {store.name}
+                          </span>
+                          <Icons.Plus />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {lists.length > 0 ? (
+                  <div className="grid gap-4">
+                    {lists.map((list) => {
+                      const store = stores.find((s) => s.id === list.storeId);
+                      const checked = list.items.filter((i) => i.checked).length;
+                      const total = list.items.length;
+                      const progress = total > 0 ? (checked / total) * 100 : 0;
+
+                      return (
+                        <button
+                          key={list.id}
+                          onClick={() => {
+                            setCurrentList(list);
+                            setView("viewList");
+                          }}
+                          className="w-full bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition text-left"
+                        >
+                          <div className="flex justify-between items-start mb-3">
+                            <div>
+                              <h3 className="font-semibold text-gray-800 text-lg">
+                                {store?.name || "Magasin inconnu"}
+                              </h3>
+                              <p className="text-sm text-gray-500">{list.date}</p>
+                            </div>
+                            <span className="text-sm font-medium text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+                              {checked}/{total}
+                            </span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2.5">
+                            <div
+                              className="bg-gradient-to-r from-green-400 to-green-600 h-2.5 rounded-full transition-all duration-300"
+                              style={{ width: `${progress}%` }}
+                            ></div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="bg-white rounded-xl p-8 text-center shadow-sm">
+                    <p className="text-gray-500">Aucune liste créée</p>
+                  </div>
+                )}
+              </>
+            )}
+          </section>
+        );
+
+        // Onglet Magasins
+        const StoresTab = () => (
+          <section className="mb-10">
+            <div className="flex justify-between items-center mb-5">
+              <h2 className="text-2xl font-semibold text-gray-700">Magasins</h2>
+              <button
+                onClick={() => {
+                  setEditingStore({ name: "", aisles: [] });
+                  setView("editStore");
+                }}
+                className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-5 py-2.5 rounded-2xl flex items-center gap-2 font-medium shadow-lg hover:shadow-xl hover:from-indigo-600 hover:to-purple-700 transition"
+              >
+                <Icons.Plus />
+                <span>Créer un magasin</span>
+              </button>
+            </div>
+
+            {stores.length > 0 ? (
+              <div className="grid gap-4">
+                {stores.map((store) => (
+                  <div
+                    key={store.id}
+                    className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition"
+                  >
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                          {store.name}
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-3">
+                          {store.aisles.length} rayon(s)
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {store.aisles.slice(0, 5).map((aisle, index) => (
+                            <span
+                              key={index}
+                              className="text-xs bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full"
+                            >
+                              {aisle}
+                            </span>
+                          ))}
+                          {store.aisles.length > 5 && (
+                            <span className="text-xs text-gray-500 px-3 py-1">
+                              +{store.aisles.length - 5}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex gap-2 ml-4">
+                        <button
+                          onClick={() => {
+                            setEditingStore(store);
+                            setView("editStore");
+                          }}
+                          className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 p-2 rounded-lg transition"
+                        >
+                          <Icons.Edit2 />
+                        </button>
+                        <button
+                          onClick={() => deleteStore(store.id)}
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition"
+                        >
+                          <Icons.Trash2 />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-white rounded-xl p-8 text-center shadow-sm">
+                <p className="text-gray-500 mb-2">Aucun magasin créé</p>
+                <p className="text-sm text-gray-400">
+                  Créez votre premier magasin pour commencer
+                </p>
+              </div>
+            )}
+          </section>
+        );
+
+        // Onglet Articles (simplifié - juste voir, gérer via manageProducts)
+        const ProductsTab = () => (
+          <section className="mb-10">
+            <div className="flex justify-between items-center mb-5">
+              <h2 className="text-2xl font-semibold text-gray-700">Articles</h2>
+              <button
+                onClick={() => setView("manageProducts")}
+                className="bg-gradient-to-r from-green-500 to-teal-600 text-white px-5 py-2.5 rounded-2xl flex items-center gap-2 font-medium shadow-lg hover:shadow-xl transition"
+              >
+                <Icons.Edit2 />
+                <span>Gérer</span>
+              </button>
+            </div>
+
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 mb-6 border border-blue-200">
+              <p className="text-sm text-blue-900">
+                <strong>{products.length}</strong> article(s) · <strong>{aisles.length}</strong> rayon(s)
+              </p>
+            </div>
+
+            {Object.entries(
+              products.reduce((acc, product) => {
+                if (!acc[product.aisle]) acc[product.aisle] = [];
+                acc[product.aisle].push(product);
+                return acc;
+              }, {})
+            )
+              .sort((a, b) => a[0].localeCompare(b[0]))
+              .map(([aisle, aisleProducts]) => (
+                <details
+                  key={aisle}
+                  className="bg-white rounded-xl shadow-sm overflow-hidden mb-3"
+                >
+                  <summary className="cursor-pointer p-5 font-semibold text-gray-700 hover:bg-gray-50 flex justify-between items-center transition">
+                    <span className="flex items-center gap-2">
+                      <span className="text-indigo-600">{getAisleIcon(aisle)}</span>
+                      {aisle}
+                    </span>
+                    <span className="text-sm font-normal text-gray-500">
+                      ({aisleProducts.length})
+                    </span>
+                  </summary>
+                  <div className="px-5 pb-5 space-y-1 border-t">
+                    {aisleProducts
+                      .sort((a, b) => a.name.localeCompare(b.name))
+                      .map((product) => (
+                        <div key={product.id} className="text-gray-700 text-sm py-2">
+                          • {product.name}
+                        </div>
+                      ))}
+                  </div>
+                </details>
+              ))}
+          </section>
+        );
+
+        // Onglet Recettes
+        const RecipesTab = () => (
+          <section className="mb-10">
+            <div className="flex justify-between items-center mb-5">
+              <h2 className="text-2xl font-semibold text-gray-700">Mes Recettes</h2>
+              <button
+                onClick={() => {
+                  setCurrentRecipe(null);
+                  setView("editRecipe");
+                }}
+                className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-5 py-2.5 rounded-2xl flex items-center gap-2 font-medium shadow-lg hover:shadow-xl transition"
+              >
+                <Icons.Plus />
+                <span>Nouvelle</span>
+              </button>
+            </div>
+
+            {recipes.length > 0 ? (
+              <div className="grid gap-4">
+                {recipes.map((recipe) => (
+                  <div
+                    key={recipe.id}
+                    className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition"
+                  >
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                          {recipe.name}
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-3">
+                          {recipe.items?.length || 0} ingrédient(s)
+                        </p>
+                        {recipe.items && recipe.items.length > 0 && (
+                          <div className="flex flex-wrap gap-2">
+                            {recipe.items.slice(0, 3).map((item, idx) => (
+                              <span
+                                key={idx}
+                                className="text-xs bg-orange-50 text-orange-700 px-3 py-1 rounded-full"
+                              >
+                                {item.product} {item.quantity > 1 ? `x${item.quantity}` : ''}
+                              </span>
+                            ))}
+                            {recipe.items.length > 3 && (
+                              <span className="text-xs text-gray-500 px-3 py-1">
+                                +{recipe.items.length - 3}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex gap-2 ml-4">
+                        <button
+                          onClick={() => {
+                            setCurrentRecipe(recipe);
+                            setView("editRecipe");
+                          }}
+                          className="text-orange-600 hover:text-orange-700 hover:bg-orange-50 p-2 rounded-lg transition"
+                        >
+                          <Icons.Edit2 />
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (window.confirm(`Supprimer la recette "${recipe.name}" ?`)) {
+                              setRecipes(recipes.filter(r => r.id !== recipe.id));
+                            }
+                          }}
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition"
+                        >
+                          <Icons.Trash2 />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-white rounded-xl p-8 text-center shadow-sm">
+                <p className="text-gray-500 mb-2">Aucune recette créée</p>
+                <p className="text-sm text-gray-400">
+                  Créez des recettes pour ajouter rapidement plusieurs articles à vos listes
+                </p>
+              </div>
+            )}
+          </section>
+        );
+
+        // Onglet Aide
+        const HelpTab = () => (
+          <section className="mb-10">
+            <h2 className="text-2xl font-semibold text-gray-700 mb-5">
+              Comment utiliser Gigi
+            </h2>
+
+            <div className="bg-white rounded-xl p-6 shadow-sm space-y-6">
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="bg-indigo-100 p-3 rounded-xl">
+                    <Icons.ShoppingCart />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800">Listes de courses</h3>
+                </div>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  Créez une liste en sélectionnant un magasin. Ajoutez des articles ou des recettes complètes.
+                  Cochez les articles au fur et à mesure de vos achats.
+                </p>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="bg-blue-100 p-3 rounded-xl">
+                    <Icons.Store />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800">Magasins</h3>
+                </div>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  Créez vos magasins et sélectionnez les rayons disponibles.
+                  Organisez l'ordre des rayons pour optimiser votre parcours en magasin.
+                </p>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="bg-green-100 p-3 rounded-xl">
+                    <Icons.Package />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800">Articles</h3>
+                </div>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  Consultez tous vos articles par rayon. Cliquez sur "Gérer" pour ajouter, modifier ou supprimer des articles et des rayons.
+                </p>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="bg-orange-100 p-3 rounded-xl">
+                    <Icons.ChefHat />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800">Recettes</h3>
+                </div>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  Créez des recettes avec les ingrédients nécessaires.
+                  Lors de la création d'une liste, ajoutez une recette pour inclure automatiquement tous ses ingrédients.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-5 mt-6 border border-indigo-200">
+              <p className="text-sm text-indigo-900">
+                💡 <strong>Astuce :</strong> Ajoutez l'application à votre écran d'accueil pour y accéder comme une vraie app !
+              </p>
+            </div>
+          </section>
+        );
+
+        // Composant de navigation réutilisable
+        const BottomNav = () => (
+          <div className="bottom-nav">
+            <div className="flex justify-around items-center h-16 max-w-2xl mx-auto">
+              <button
+                onClick={() => { setTab("lists"); setView("home"); }}
+                className={`nav-item flex flex-col items-center gap-1 flex-1 ${
+                  tab === "lists" ? "active" : "text-gray-500"
+                }`}
+              >
+                <Icons.ShoppingCart />
+                <span className="text-xs font-medium">Listes</span>
+              </button>
+              <button
+                onClick={() => { setTab("stores"); setView("home"); }}
+                className={`nav-item flex flex-col items-center gap-1 flex-1 ${
+                  tab === "stores" ? "active" : "text-gray-500"
+                }`}
+              >
+                <Icons.Store />
+                <span className="text-xs font-medium">Magasins</span>
+              </button>
+              <button
+                onClick={() => { setTab("products"); setView("home"); }}
+                className={`nav-item flex flex-col items-center gap-1 flex-1 ${
+                  tab === "products" ? "active" : "text-gray-500"
+                }`}
+              >
+                <Icons.Package />
+                <span className="text-xs font-medium">Articles</span>
+              </button>
+              <button
+                onClick={() => { setTab("recipes"); setView("home"); }}
+                className={`nav-item flex flex-col items-center gap-1 flex-1 ${
+                  tab === "recipes" ? "active" : "text-gray-500"
+                }`}
+              >
+                <Icons.ChefHat />
+                <span className="text-xs font-medium">Recettes</span>
+              </button>
+              <button
+                onClick={() => { setTab("help"); setView("home"); }}
+                className={`nav-item flex flex-col items-center gap-1 flex-1 ${
+                  tab === "help" ? "active" : "text-gray-500"
+                }`}
+              >
+                <Icons.HelpCircle />
+                <span className="text-xs font-medium">Aide</span>
+              </button>
+            </div>
+          </div>
+        );
+
         if (loading) {
           return (
             <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
@@ -472,204 +1053,84 @@
 
         if (view === "home") {
           return (
-            <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-100 p-6 pb-16">
-              <div className="max-w-4xl mx-auto">
-                {/* HEADER */}
-                <div className="flex flex-col items-center justify-center mb-10">
-                  <img
-                    src="gigi.png"
-                    alt="Logo Gigi"
-                    width="120"
-                    className="drop-shadow-md hover:scale-105 transition-transform"
-                  />
-                  <h1 className="text-4xl font-extrabold text-gray-800 mt-5 tracking-tight">
-                    Mes courses
-                  </h1>
+            <>
+              <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-100 p-6 pb-20">
+                <div className="max-w-4xl mx-auto">
+                  {/* HEADER */}
+                  <div className="flex flex-col items-center justify-center mb-10">
+                    <img
+                      src="gigi.png"
+                      alt="Logo Gigi"
+                      width="120"
+                      className="drop-shadow-md hover:scale-105 transition-transform"
+                    />
+                    <h1 className="text-2xl font-bold text-gray-800 mt-5 tracking-tight">
+                      Les courses les yeux fermés
+                    </h1>
+                  </div>
+
+                  {/* CONTENU SELON L'ONGLET ACTIF */}
+                  {tab === "lists" && <ListsTab />}
+                  {tab === "stores" && <StoresTab />}
+                  {tab === "products" && <ProductsTab />}
+                  {tab === "recipes" && <RecipesTab />}
+                  {tab === "help" && <HelpTab />}
                 </div>
-
-                {/* MAGASINS */}
-                <section className="mb-10">
-                  <div className="flex justify-between items-center mb-5">
-                    <h2 className="text-2xl font-semibold text-gray-700">
-                      Magasins
-                    </h2>
-                    <button
-                      onClick={() => {
-                        setEditingStore({ name: "", aisles: [] });
-                        setView("editStore");
-                      }}
-                      className="relative overflow-hidden bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-5 py-2.5 rounded-2xl flex items-center gap-2 font-medium shadow-lg hover:shadow-xl hover:from-indigo-600 hover:to-purple-700 active:scale-95 transition-all duration-200 group"
-                    >
-                      <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      <Icons.Plus className="w-5 h-5 transition-transform group-hover:rotate-90" />
-                      <span>Créer un magasin</span>
-                    </button>
-                  </div>
-
-                  <div className="grid gap-4">
-                    {stores.map((store) => (
-                      <div
-                        key={store.id}
-                        className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-lg hover:border-indigo-100 transition-all flex justify-between items-center"
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className="bg-indigo-100 text-indigo-600 p-3 rounded-xl">
-                            <Icons.Store className="w-5 h-5" />
-                          </div>
-                          <div>
-                            <h3 className="font-semibold text-gray-800 text-lg">
-                              {store.name}
-                            </h3>
-                            <p className="text-sm text-gray-500">
-                              {store.aisles.length} rayons
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <button
-                            onClick={() => {
-                              setEditingStore(store);
-                              setView("editStore");
-                            }}
-                            className="text-gray-400 hover:text-indigo-600 transition"
-                          >
-                            <Icons.Edit2 className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => deleteStore(store.id)}
-                            className="text-gray-400 hover:text-red-600 transition"
-                          >
-                            <Icons.Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                    {stores.length === 0 && (
-                      <p className="text-center text-gray-500 py-8 italic">
-                        Aucun magasin créé
-                      </p>
-                    )}
-                  </div>
-                </section>
-
-                {/* GESTION DES ARTICLES */}
-                <section className="mb-10">
-                  <button
-                    onClick={() => setView("manageProducts")}
-                    className="w-full bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-lg hover:border-purple-100 transition-all flex items-center justify-between group"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="bg-purple-100 text-purple-600 p-3 rounded-xl group-hover:bg-purple-200 transition">
-                        <Icons.Package className="w-5 h-5" />
-                      </div>
-                      <span className="font-medium text-gray-800 text-lg">
-                        Gérer mes articles
-                      </span>
-                    </div>
-                    <Icons.ChevronRight className="text-gray-400 group-hover:text-purple-500 transition" />
-                  </button>
-                </section>
-
-                {/* LISTES DE COURSES */}
-                <section>
-                  <div className="flex justify-between items-center mb-5">
-                    <h2 className="text-2xl font-semibold text-gray-700">
-                      Listes de Courses
-                    </h2>
-                    <button
-                      onClick={() => {
-                        if (stores.length === 0) {
-                          alert("Créez d'abord un magasin");
-                          return;
-                        }
-                        setView("selectStore");
-                      }}
-                      className="relative overflow-hidden bg-gradient-to-r from-emerald-500 to-green-600 text-white px-5 py-2.5 rounded-2xl flex items-center gap-2 font-medium shadow-lg hover:shadow-xl hover:from-emerald-600 hover:to-green-700 active:scale-95 transition-all duration-200 group"
-                    >
-                      <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      <Icons.Plus className="w-5 h-5 transition-transform group-hover:rotate-90" />
-                      <span>Nouvelle Liste</span>
-                    </button>
-                  </div>
-
-                  <div className="grid gap-4">
-                    {lists.map((list) => {
-                      const checkedCount = list.items.filter(
-                        (i) => i.checked
-                      ).length;
-                      const totalCount = list.items.length;
-                      const progress =
-                        totalCount > 0 ? (checkedCount / totalCount) * 100 : 0;
-
-                      return (
-                        <div
-                          key={list.id}
-                          onClick={() => {
-                            setCurrentList(list);
-                            setView("viewList");
-                          }}
-                          className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 cursor-pointer hover:shadow-lg hover:border-green-100 transition-all"
-                        >
-                          <div className="flex justify-between items-start">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-3 mb-2">
-                                <div className="bg-green-100 text-green-600 p-2 rounded-lg">
-                                  <Icons.ShoppingCart className="w-4 h-4" />
-                                </div>
-                                <h3 className="font-semibold text-gray-800 text-lg">
-                                  {list.storeName}
-                                </h3>
-                              </div>
-                              <p className="text-sm text-gray-500 mb-3">
-                                {list.date}
-                              </p>
-                              <div className="flex items-center gap-2">
-                                <div className="flex-1 bg-gray-200 rounded-full h-2">
-                                  <div
-                                    className="bg-green-500 h-2 rounded-full transition-all"
-                                    style={{ width: `${progress}%` }}
-                                  ></div>
-                                </div>
-                                <span className="text-xs text-gray-600">
-                                  {checkedCount}/{totalCount}
-                                </span>
-                              </div>
-                            </div>
-                            <Icons.ChevronRight className="text-gray-400 mt-1" />
-                          </div>
-                        </div>
-                      );
-                    })}
-                    {lists.length === 0 && (
-                      <p className="text-center text-gray-500 py-8 italic">
-                        Aucune liste créée
-                      </p>
-                    )}
-                  </div>
-                </section>
               </div>
-            </div>
+              
+              {/* Barre de navigation */}
+              <BottomNav />
+            </>
           );
         }
 
         if (view === "editStore") {
-          return <EditStoreView />;
+          return (
+            <>
+              <EditStoreView />
+              <BottomNav />
+            </>
+          );
         }
 
         if (view === "selectStore") {
-          return <SelectStoreView />;
+          return (
+            <>
+              <SelectStoreView />
+              <BottomNav />
+            </>
+          );
         }
 
         if (view === "createList") {
-          return <CreateListView />;
+          return (
+            <>
+              <CreateListView />
+              <BottomNav />
+            </>
+          );
         }
 
         if (view === "viewList") {
-          return <ViewListView />;
+          return (
+            <>
+              <ViewListView />
+              <BottomNav />
+            </>
+          );
         }
 
         if (view === "manageProducts") {
-          return <ManageProductsView />;
+          return (
+            <>
+              <ManageProductsView />
+              <BottomNav />
+            </>
+          );
+        }
+
+        if (view === "editRecipe") {
+          return <EditRecipeView />;
         }
 
         function EditStoreView() {
@@ -965,6 +1426,7 @@
           const [suggestions, setSuggestions] = useState([]);
           const [selectedAisle, setSelectedAisle] = useState("");
           const [showNewProductForm, setShowNewProductForm] = useState(false);
+          const [showRecipes, setShowRecipes] = useState(false);
 
           const handleInputChange = (value) => {
             setInputValue(value);
@@ -991,6 +1453,29 @@
             setSuggestions([]);
             setSelectedAisle("");
             setShowNewProductForm(false);
+          };
+
+          const addRecipe = (recipe) => {
+            // Fusionner les ingrédients de la recette avec la liste existante
+            const merged = [...listItems];
+            recipe.items.forEach(recipeItem => {
+              const existingIndex = merged.findIndex(
+                item => item.product === recipeItem.product
+              );
+              if (existingIndex >= 0) {
+                // Augmenter la quantité si le produit existe déjà
+                merged[existingIndex].quantity += recipeItem.quantity;
+              } else {
+                // Ajouter le nouveau produit
+                merged.push({
+                  ...recipeItem,
+                  checked: false,
+                  recipeOrigin: recipe.name
+                });
+              }
+            });
+            setListItems(merged);
+            setShowRecipes(false);
           };
 
           const addNewProduct = () => {
@@ -1134,6 +1619,39 @@
                     </div>
                   )}
                 </div>
+
+                {/* AJOUTER DES RECETTES */}
+                {recipes.length > 0 && (
+                  <div className="bg-white rounded-xl p-6 shadow-sm mb-4">
+                    <button
+                      onClick={() => setShowRecipes(!showRecipes)}
+                      className="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white py-3 rounded-lg flex items-center justify-center gap-2 font-medium hover:from-orange-600 hover:to-red-700 transition"
+                    >
+                      <Icons.ChefHat />
+                      <span>{showRecipes ? "Masquer les recettes" : "Ajouter une recette"}</span>
+                    </button>
+
+                    {showRecipes && (
+                      <div className="mt-4 space-y-2">
+                        {recipes.map(recipe => (
+                          <button
+                            key={recipe.id}
+                            onClick={() => addRecipe(recipe)}
+                            className="w-full p-4 bg-orange-50 hover:bg-orange-100 rounded-lg text-left transition border border-orange-200"
+                          >
+                            <div className="font-medium text-orange-900 mb-1">
+                              {recipe.name}
+                            </div>
+                            <div className="text-sm text-orange-700">
+                              {recipe.items?.length || 0} ingrédient(s)
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {listItems.length > 0 && (
                   <div className="bg-white rounded-xl p-6 shadow-sm mb-4">
                     <h3 className="font-medium text-gray-700 mb-3">
@@ -1155,6 +1673,11 @@
                               </div>
                               <div className="text-sm text-gray-500">
                                 {item.aisle}
+                                {item.recipeOrigin && (
+                                  <span className="ml-2 text-xs text-orange-600">
+                                    • de {item.recipeOrigin}
+                                  </span>
+                                )}
                               </div>
                             </div>
                           </div>
@@ -1319,9 +1842,11 @@
         function ManageProductsView() {
           const [showAddProduct, setShowAddProduct] = useState(false);
           const [showAddAisle, setShowAddAisle] = useState(false);
+          const [editingAisle, setEditingAisle] = useState(null);
           const [newProductName, setNewProductName] = useState("");
           const [newProductAisle, setNewProductAisle] = useState("");
           const [newAisleName, setNewAisleName] = useState("");
+          const [editAisleName, setEditAisleName] = useState("");
 
           const groupedProducts = {};
           products.forEach((product) => {
@@ -1359,6 +1884,30 @@
             setAisles([...aisles, newAisleName.trim()]);
             setNewAisleName("");
             setShowAddAisle(false);
+          };
+
+          const renameAisle = (oldName) => {
+            if (!editAisleName.trim()) {
+              alert("Veuillez entrer un nom de rayon");
+              return;
+            }
+            if (aisles.includes(editAisleName.trim()) && editAisleName.trim() !== oldName) {
+              alert("Ce rayon existe déjà");
+              return;
+            }
+            
+            // Renommer le rayon dans la liste des rayons
+            const newAisles = aisles.map(a => a === oldName ? editAisleName.trim() : a);
+            setAisles(newAisles);
+            
+            // Mettre à jour tous les produits de ce rayon
+            const newProducts = products.map(p => 
+              p.aisle === oldName ? { ...p, aisle: editAisleName.trim() } : p
+            );
+            setProducts(newProducts);
+            
+            setEditingAisle(null);
+            setEditAisleName("");
           };
 
           const deleteAisle = (aisleName) => {
@@ -1499,35 +2048,81 @@
 
                   {aisles.sort().map((aisle) => {
                     const aisleProducts = groupedProducts[aisle] || [];
+                    const isEditing = editingAisle === aisle;
+                    
                     return (
                       <div
                         key={aisle}
                         className="bg-white rounded-xl p-5 shadow-sm"
                       >
-                        <div className="flex items-center justify-between mb-3 pb-2 border-b border-gray-200">
-                          <h3 className="font-semibold text-gray-700 flex items-center gap-2">
-                            <span className="text-indigo-600">
-                              {getAisleIcon(aisle)}
-                            </span>
-                            {aisle}
-                            <span className="ml-2 text-sm font-normal text-gray-500">
-                              ({aisleProducts.length}{" "}
-                              {aisleProducts.length === 0
-                                ? "article"
-                                : aisleProducts.length === 1
-                                ? "article"
-                                : "articles"}
-                              )
-                            </span>
-                          </h3>
-                          <button
-                            onClick={() => deleteAisle(aisle)}
-                            className="text-red-500 hover:text-red-700 transition"
-                            title="Supprimer le rayon"
-                          >
-                            <Icons.Trash2 />
-                          </button>
-                        </div>
+                        {isEditing ? (
+                          <div className="mb-3 pb-2 border-b border-gray-200">
+                            <h3 className="font-medium text-gray-700 mb-3">Renommer le rayon</h3>
+                            <input
+                              type="text"
+                              value={editAisleName}
+                              onChange={(e) => setEditAisleName(e.target.value)}
+                              onKeyPress={(e) => e.key === "Enter" && renameAisle(aisle)}
+                              className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                              placeholder="Nouveau nom"
+                              autoFocus
+                            />
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => renameAisle(aisle)}
+                                className="flex-1 bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
+                              >
+                                Enregistrer
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setEditingAisle(null);
+                                  setEditAisleName("");
+                                }}
+                                className="px-4 bg-gray-200 text-gray-700 py-2 rounded-lg hover:bg-gray-300 transition"
+                              >
+                                Annuler
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-between mb-3 pb-2 border-b border-gray-200">
+                            <h3 className="font-semibold text-gray-700 flex items-center gap-2">
+                              <span className="text-indigo-600">
+                                {getAisleIcon(aisle)}
+                              </span>
+                              {aisle}
+                              <span className="ml-2 text-sm font-normal text-gray-500">
+                                ({aisleProducts.length}{" "}
+                                {aisleProducts.length === 0
+                                  ? "article"
+                                  : aisleProducts.length === 1
+                                  ? "article"
+                                  : "articles"}
+                                )
+                              </span>
+                            </h3>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => {
+                                  setEditingAisle(aisle);
+                                  setEditAisleName(aisle);
+                                }}
+                                className="text-indigo-600 hover:text-indigo-700 transition p-2"
+                                title="Renommer le rayon"
+                              >
+                                <Icons.Edit2 />
+                              </button>
+                              <button
+                                onClick={() => deleteAisle(aisle)}
+                                className="text-red-500 hover:text-red-700 transition p-2"
+                                title="Supprimer le rayon"
+                              >
+                                <Icons.Trash2 />
+                              </button>
+                            </div>
+                          </div>
+                        )}
                         {aisleProducts.length > 0 ? (
                           <div className="space-y-2">
                             {aisleProducts
@@ -1572,6 +2167,225 @@
                 </div>
               </div>
             </div>
+          );
+        }
+
+        // ===== ÉDITION DE RECETTE =====
+        function EditRecipeView() {
+          const isEditing = currentRecipe !== null;
+          const [recipeName, setRecipeName] = useState(currentRecipe?.name || "");
+          const [recipeItems, setRecipeItems] = useState(currentRecipe?.items || []);
+          const [searchTerm, setSearchTerm] = useState("");
+
+          const filteredProducts = products.filter(p =>
+            p.name.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+
+          const addIngredient = (product) => {
+            const existing = recipeItems.find(item => item.product === product.name);
+            if (existing) {
+              setRecipeItems(recipeItems.map(item =>
+                item.product === product.name
+                  ? { ...item, quantity: item.quantity + 1 }
+                  : item
+              ));
+            } else {
+              setRecipeItems([...recipeItems, {
+                product: product.name,
+                aisle: product.aisle,
+                quantity: 1
+              }]);
+            }
+            setSearchTerm("");
+          };
+
+          const removeIngredient = (index) => {
+            setRecipeItems(recipeItems.filter((_, i) => i !== index));
+          };
+
+          const updateQuantity = (index, delta) => {
+            const newItems = [...recipeItems];
+            const newQuantity = newItems[index].quantity + delta;
+            if (newQuantity > 0) {
+              newItems[index].quantity = newQuantity;
+              setRecipeItems(newItems);
+            } else {
+              removeIngredient(index);
+            }
+          };
+
+          const saveRecipe = () => {
+            if (!recipeName.trim()) {
+              alert("Entrez un nom de recette");
+              return;
+            }
+            if (recipeItems.length === 0) {
+              alert("Ajoutez au moins un ingrédient");
+              return;
+            }
+
+            if (isEditing) {
+              // Modifier recette existante
+              setRecipes(recipes.map(r =>
+                r.id === currentRecipe.id
+                  ? { ...r, name: recipeName.trim(), items: recipeItems }
+                  : r
+              ));
+            } else {
+              // Créer nouvelle recette
+              setRecipes([...recipes, {
+                id: Date.now(),
+                name: recipeName.trim(),
+                items: recipeItems
+              }]);
+            }
+
+            setCurrentRecipe(null);
+            setView("home");
+          };
+
+          return (
+            <>
+              <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 p-6 pb-24">
+                <div className="max-w-3xl mx-auto">
+                  {/* HEADER */}
+                  <div className="flex items-center justify-between mb-8">
+                    <div>
+                      <h1 className="text-3xl font-bold text-gray-800">
+                        {isEditing ? "Modifier la recette" : "Nouvelle recette"}
+                      </h1>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setCurrentRecipe(null);
+                        setView("home");
+                      }}
+                      className="text-gray-600 hover:text-gray-800 p-2"
+                    >
+                      <Icons.X />
+                    </button>
+                  </div>
+
+                  {/* NOM DE LA RECETTE */}
+                  <div className="bg-white rounded-xl p-5 shadow-sm mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Nom de la recette
+                    </label>
+                    <input
+                      type="text"
+                      value={recipeName}
+                      onChange={(e) => setRecipeName(e.target.value)}
+                      placeholder="Ex: Pâtes Carbonara"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    />
+                  </div>
+
+                  {/* RECHERCHE D'INGRÉDIENTS */}
+                  <div className="bg-white rounded-xl p-5 shadow-sm mb-6">
+                    <h3 className="font-medium text-gray-700 mb-3">Ajouter des ingrédients</h3>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder="Rechercher un article..."
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      />
+                      <div className="absolute left-3 top-3.5 text-gray-400">
+                        <Icons.Search />
+                      </div>
+                    </div>
+
+                    {searchTerm && filteredProducts.length > 0 && (
+                      <div className="mt-3 border border-gray-200 rounded-lg max-h-60 overflow-y-auto">
+                        {filteredProducts.map(product => (
+                          <button
+                            key={product.id}
+                            onClick={() => addIngredient(product)}
+                            className="w-full px-4 py-3 text-left hover:bg-orange-50 border-b border-gray-100 last:border-b-0 transition"
+                          >
+                            <div className="font-medium text-gray-800">{product.name}</div>
+                            <div className="text-sm text-gray-500">{product.aisle}</div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* LISTE DES INGRÉDIENTS */}
+                  {recipeItems.length > 0 && (
+                    <div className="bg-white rounded-xl p-5 shadow-sm mb-6">
+                      <h3 className="font-medium text-gray-700 mb-4">
+                        Ingrédients ({recipeItems.length})
+                      </h3>
+                      <div className="space-y-3">
+                        {recipeItems.map((item, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between bg-orange-50 p-4 rounded-lg"
+                          >
+                            <div className="flex-1">
+                              <div className="font-medium text-gray-800">{item.product}</div>
+                              <div className="text-sm text-gray-600">{item.aisle}</div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <div className="flex items-center gap-1 bg-white border border-gray-300 rounded-lg">
+                                <button
+                                  onClick={() => updateQuantity(index, -1)}
+                                  className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-l-lg transition"
+                                >
+                                  −
+                                </button>
+                                <span className="px-3 font-medium text-gray-800 min-w-[2.5rem] text-center">
+                                  {item.quantity}
+                                </span>
+                                <button
+                                  onClick={() => updateQuantity(index, 1)}
+                                  className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-r-lg transition"
+                                >
+                                  +
+                                </button>
+                              </div>
+                              <button
+                                onClick={() => removeIngredient(index)}
+                                className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition"
+                              >
+                                <Icons.Trash2 />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* BOUTONS D'ACTION */}
+                  <div className="flex gap-3">
+                    <button
+                      onClick={saveRecipe}
+                      className="flex-1 bg-gradient-to-r from-orange-500 to-red-600 text-white py-4 rounded-xl font-medium hover:from-orange-600 hover:to-red-700 transition shadow-lg hover:shadow-xl"
+                    >
+                      {isEditing ? "Enregistrer les modifications" : "Créer la recette"}
+                    </button>
+                    {isEditing && (
+                      <button
+                        onClick={() => {
+                          if (window.confirm(`Supprimer la recette "${currentRecipe.name}" ?`)) {
+                            setRecipes(recipes.filter(r => r.id !== currentRecipe.id));
+                            setCurrentRecipe(null);
+                            setView("home");
+                          }
+                        }}
+                        className="px-6 bg-red-500 text-white py-4 rounded-xl font-medium hover:bg-red-600 transition shadow-lg"
+                      >
+                        Supprimer
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <BottomNav />
+            </>
           );
         }
 
