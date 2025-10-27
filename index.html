@@ -42,7 +42,7 @@
 
       #root {
         min-height: 100vh;
-        padding-bottom: 80px;
+        padding-bottom: 95px;
       }
 
       .dragging {
@@ -62,10 +62,13 @@
         border-top: 1px solid #e5e7eb;
         z-index: 50;
         box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        padding-bottom: env(safe-area-inset-bottom, 12px);
       }
 
       .nav-item {
         transition: all 0.2s;
+        padding-top: 8px;
+        padding-bottom: 8px;
       }
 
       .nav-item.active {
@@ -990,7 +993,7 @@
         // Composant de navigation réutilisable
         const BottomNav = () => (
           <div className="bottom-nav">
-            <div className="flex justify-around items-center h-16 max-w-2xl mx-auto">
+            <div className="flex justify-around items-center h-20 max-w-2xl mx-auto">
               <button
                 onClick={() => { setTab("lists"); setView("home"); }}
                 className={`nav-item flex flex-col items-center gap-1 flex-1 ${
@@ -1064,8 +1067,8 @@
                       width="120"
                       className="drop-shadow-md hover:scale-105 transition-transform"
                     />
-                    <h1 className="text-2xl font-bold text-gray-800 mt-5 tracking-tight">
-                      Les courses les yeux fermés
+                    <h1 className="text-1xl font-bold text-gray-800 mt-5 tracking-tight">
+                      Les courses les yeux fermées
                     </h1>
                   </div>
 
