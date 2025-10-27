@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Mes Courses">
+  <title>Mes Courses - Gigi</title>
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIk1lcyBDb3Vyc2VzIiwKICAic2hvcnRfbmFtZSI6ICJDb3Vyc2VzIiwKICAic3RhcnRfdXJsIjogIi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNmZmZmZmYiLAogICJ0aGVtZV9jb2xvciI6ICIjNDc3MEZGIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCM2FXUjBhRDBpTWpBd0lpQm9aV2xuYUhROUlqSXdNQ0lnZG1sbGQwSnZlRDBpTUNBd0lESXdNQ0F5TURBaUlHWnBiR3c5SW01dmJtVWlJSGh0Ykc1eklEMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TUM5emRtY2lQZ28gSUR4d1lYUm9JR1E5SWswMU1DQTBNRU0xTUNBek5TQTFOU0F6TUNBMk1DQXpNRXd4TkRBZ016QkRNVFExSURNd0lERTFNQ0F6TlNBeE5UQWdOREJNTVRVd0lEY3dURFV3SURjd1REUNFLWG5Zd0lqOThQR1ZzYkdsd2MyVWdZM2c5SWpFd01DSWdZM2s5SWpjd0lpQnllRDBpTlRBaUlISjVQU0l6TlNJZ1ptbHNiRDBpSXpZQ09FVTVSQ0l2UGdvZ1BIQmhkR2dnWkQwaVRUY3dJRGcxVERjd0lERXdOVU0zTUNBeE1EVWdOelVnTVRBd0lEZ3dJREV3TUVNNE5TQXhNREFnT0RVZ01UQTFJRGcxSURFd05VdzROQ0E0TlNJZ2MzUnliMnRsUFNJak1VVXpRVFEzSWlCemRISnZhMlZYYVdSMGFEMGlOU0lnYzNSeWIydGxUR2x1WldOaGNEMGljbTkxYm1RaUlHWnBiR3c5SW01dmJtVWlMejRLSUR4d1lYUm9JR1E5SWswNU5TQXhNalVnVVRrM0lERXlPQ0F4TURBZ01USTRJRkV4TURNZ01USTRJREV3TlNBeE1qVWlJSE4wY205clpUMGlJekZGTTBFME55SWdjM1J5YjJ0bFYybGtkR2c5SWpNaUlHWnBiR3c5SW01dmJtVWlMejRLUEM5emRtYysiLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiCiAgICB9CiAgXQp9">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    #root {
+      min-height: 100vh;
+    }
+  </style>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- React & ReactDOM -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  
+  <!-- Babel Standalone -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, createElement } = React;
+
+    // Icônes SVG simplifiées
+    const Icons = {
+      Plus: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+      Store: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
+      ShoppingCart: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>,
+      Edit2: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>,
+      Trash2: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>,
+      X: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+      ChevronRight: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>,
+      ArrowUp: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>,
+      ArrowDown: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>,
+      Apple: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/></svg>,
+      Beef: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6.5 6.5h11v11h-11z"/><path d="M6 6L5 5M18 6l1-1M6 18l-1 1M18 18l1 1"/></svg>,
+      Fish: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6.5 12c.94-3.46 4.94-6 8.5-6 3.56 0 6.06 2.54 7 6-.94 3.47-3.44 6-7 6s-7.56-2.53-8.5-6Z"/><path d="M18 12v.5M16 17.5a10 10 0 0 1-8-5 10 10 0 0 1 8-5"/></svg>,
+      Milk: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M8 2h8v2.5l1 1.5v15h-10v-15l1-1.5z"/><path d="M9 6h6"/></svg>,
+      Coffee: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>,
+      Cookie: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="1"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="9" r="1"/><circle cx="9" cy="15" r="1"/><circle cx="15" cy="15" r="1"/></svg>,
+      Snowflake: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="2" x2="12" y2="22"/><path d="m17 5-5 5-5-5"/><path d="m17 19-5-5-5 5"/><path d="M2 12h20"/><path d="m5 7 5 5-5 5"/><path d="m19 7-5 5 5 5"/></svg>,
+      Beer: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 11h1a3 3 0 0 1 0 6h-1"/><path d="M9 12v6"/><path d="M13 12v6"/><path d="M14 7.5c-1 0-1.44.5-3 .5s-2-.5-3-.5-1.72.5-2.5.5a2.5 2.5 0 0 1 0-5c.78 0 1.57.5 2.5.5S9.44 2 11 2s2 1.5 3 1.5 1.72-.5 2.5-.5a2.5 2.5 0 0 1 0 5c-.78 0-1.5-.5-2.5-.5Z"/><path d="M5 8v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8"/></svg>,
+      Droplet: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>,
+      Sparkles: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>,
+    };
+
+    const AISLE_ICONS = {
+      'Fruits et Légumes': 'Apple',
+      'Boucherie': 'Beef',
+      'Poissonnerie': 'Fish',
+      'Crémerie': 'Milk',
+      'Épicerie Salée': 'Coffee',
+      'Épicerie Sucrée': 'Cookie',
+      'Surgelés': 'Snowflake',
+      'Boissons': 'Beer',
+      'Hygiène': 'Droplet',
+      'Entretien': 'Sparkles'
+    };
+
+    function ShoppingListApp() {
+      const [stores, setStores] = useState([]);
+      const [products, setProducts] = useState([]);
+      const [aisles, setAisles] = useState(['Fruits et Légumes', 'Boucherie', 'Poissonnerie', 'Crémerie', 'Épicerie Salée', 'Épicerie Sucrée', 'Surgelés', 'Boissons', 'Hygiène', 'Entretien']);
+      const [lists, setLists] = useState([]);
+      const [view, setView] = useState('home');
+      const [currentStore, setCurrentStore] = useState(null);
+      const [currentList, setCurrentList] = useState(null);
+      const [editingStore, setEditingStore] = useState(null);
+      const [loading, setLoading] = useState(true);
+
+      useEffect(() => {
+        const savedStores = localStorage.getItem('stores');
+        const savedProducts = localStorage.getItem('products');
+        const savedAisles = localStorage.getItem('aisles');
+        const savedLists = localStorage.getItem('lists');
+        
+        if (savedStores) setStores(JSON.parse(savedStores));
+        if (savedProducts) setProducts(JSON.parse(savedProducts));
+        if (savedAisles) setAisles(JSON.parse(savedAisles));
+        if (savedLists) setLists(JSON.parse(savedLists));
+        
+        setLoading(false);
+      }, []);
+
+      useEffect(() => { if (!loading) localStorage.setItem('stores', JSON.stringify(stores)); }, [stores, loading]);
+      useEffect(() => { if (!loading) localStorage.setItem('products', JSON.stringify(products)); }, [products, loading]);
+      useEffect(() => { if (!loading && aisles.length > 0) localStorage.setItem('aisles', JSON.stringify(aisles)); }, [aisles, loading]);
+      useEffect(() => { if (!loading) localStorage.setItem('lists', JSON.stringify(lists)); }, [lists, loading]);
+
+      const getAisleIcon = (aisleName) => {
+        const iconName = AISLE_ICONS[aisleName] || 'Store';
+        const IconComponent = Icons[iconName];
+        return <IconComponent />;
+      };
+
+      if (loading) {
+        return (
+          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+              <p className="text-gray-600">Chargement...</p>
+            </div>
+          </div>
+        );
+      }
+
+      if (view === 'home') {
+        return (
+          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 pb-8">
+            <div className="max-w-4xl mx-auto">
+              <div className="flex flex-col items-center justify-center mb-8">
+                    <img src="gigi.png" alt="Description de l'image" width="125"/>
+                <h1 className="text-3xl font-bold text-gray-800 mt-4">Mes courses</h1>
+              </div>
+              
+              <div className="mb-8">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-semibold text-gray-700">Magasins</h2>
+                  <button onClick={() => { setEditingStore({ name: '', aisles: [] }); setView('editStore'); }} className="bg-indigo-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-indigo-700 transition shadow-sm">
+                    <Icons.Plus />Nouveau
+                  </button>
+                </div>
+                <div className="grid gap-3">
+                  {stores.map(store => (
+                    <div key={store.id} className="bg-white rounded-xl p-4 shadow-sm flex justify-between items-center hover:shadow-md transition">
+                      <div className="flex items-center gap-3">
+                        <Icons.Store />
+                        <div>
+                          <h3 className="font-medium text-gray-800">{store.name}</h3>
+                          <p className="text-sm text-gray-500">{store.aisles.length} rayons</p>
+                        </div>
+                      </div>
+                      <button onClick={() => { setEditingStore(store); setView('editStore'); }} className="text-gray-400 hover:text-indigo-600 transition">
+                        <Icons.Edit2 />
+                      </button>
+                    </div>
+                  ))}
+                  {stores.length === 0 && <p className="text-center text-gray-500 py-8">Aucun magasin créé</p>}
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-semibold text-gray-700">Listes de Courses</h2>
+                  <button onClick={() => { if (stores.length === 0) { alert('Créez d\'abord un magasin'); return; } setView('selectStore'); }} className="bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-green-700 transition shadow-sm">
+                    <Icons.Plus />Nouvelle Liste
+                  </button>
+                </div>
+                <div className="grid gap-3">
+                  {lists.map(list => {
+                    const checkedCount = list.items.filter(i => i.checked).length;
+                    const totalCount = list.items.length;
+                    return (
+                      <div key={list.id} onClick={() => { setCurrentList(list); setView('viewList'); }} className="bg-white rounded-xl p-4 shadow-sm cursor-pointer hover:shadow-md transition">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <Icons.ShoppingCart />
+                              <h3 className="font-medium text-gray-800">{list.storeName}</h3>
+                            </div>
+                            <p className="text-sm text-gray-500 mb-2">{list.date}</p>
+                            <div className="flex items-center gap-2">
+                              <div className="flex-1 bg-gray-200 rounded-full h-2">
+                                <div className="bg-green-500 h-2 rounded-full transition-all" style={{ width: `${totalCount ? (checkedCount / totalCount) * 100 : 0}%` }}></div>
+                              </div>
+                              <span className="text-xs text-gray-600">{checkedCount}/{totalCount}</span>
+                            </div>
+                          </div>
+                          <Icons.ChevronRight />
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {lists.length === 0 && <p className="text-center text-gray-500 py-8">Aucune liste créée</p>}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      if (view === 'editStore') {
+        return <EditStoreView />;
+      }
+
+      if (view === 'selectStore') {
+        return <SelectStoreView />;
+      }
+
+      if (view === 'createList') {
+        return <CreateListView />;
+      }
+
+      if (view === 'viewList') {
+        return <ViewListView />;
+      }
+
+      function EditStoreView() {
+        const [name, setName] = useState(editingStore?.name || '');
+        const [selectedAisles, setSelectedAisles] = useState(editingStore?.aisles || []);
+        const [newAisle, setNewAisle] = useState('');
+        const [showAddAisle, setShowAddAisle] = useState(false);
+
+        const handleSave = () => {
+          if (!name.trim()) { alert('Veuillez entrer un nom de magasin'); return; }
+          if (selectedAisles.length === 0) { alert('Veuillez sélectionner au moins un rayon'); return; }
+          if (editingStore?.id) {
+            setStores(stores.map(s => s.id === editingStore.id ? { ...s, name, aisles: selectedAisles } : s));
+          } else {
+            setStores([...stores, { id: Date.now(), name, aisles: selectedAisles }]);
+          }
+          setView('home');
+        };
+
+        const addNewAisle = () => {
+          if (newAisle.trim() && !aisles.includes(newAisle.trim())) {
+            setAisles([...aisles, newAisle.trim()]);
+            setNewAisle('');
+            setShowAddAisle(false);
+          }
+        };
+
+        const moveAisle = (index, direction) => {
+          const newAisles = [...selectedAisles];
+          const newIndex = direction === 'up' ? index - 1 : index + 1;
+          if (newIndex >= 0 && newIndex < newAisles.length) {
+            [newAisles[index], newAisles[newIndex]] = [newAisles[newIndex], newAisles[index]];
+            setSelectedAisles(newAisles);
+          }
+        };
+
+        const toggleAisle = (aisle) => {
+          if (selectedAisles.includes(aisle)) {
+            setSelectedAisles(selectedAisles.filter(a => a !== aisle));
+          } else {
+            setSelectedAisles([...selectedAisles, aisle]);
+          }
+        };
+
+        return (
+          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 pb-8">
+            <div className="max-w-2xl mx-auto">
+              <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold text-gray-800">{editingStore?.id ? 'Modifier' : 'Nouveau'} Magasin</h1>
+                <button onClick={() => setView('home')} className="text-gray-600 hover:text-gray-800"><Icons.X /></button>
+              </div>
+              <div className="bg-white rounded-xl p-6 shadow-sm mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Nom du magasin</label>
+                <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Ex: Carrefour Centre-ville" />
+              </div>
+              <div className="bg-white rounded-xl p-6 shadow-sm mb-4">
+                <div className="flex justify-between items-center mb-4">
+                  <label className="text-sm font-medium text-gray-700">Rayons disponibles</label>
+                  <button onClick={() => setShowAddAisle(!showAddAisle)} className="text-indigo-600 text-sm font-medium hover:text-indigo-700">+ Ajouter un rayon</button>
+                </div>
+                {showAddAisle && (
+                  <div className="mb-4 flex gap-2">
+                    <input type="text" value={newAisle} onChange={(e) => setNewAisle(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && addNewAisle()} className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Nom du nouveau rayon" />
+                    <button onClick={addNewAisle} className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"><Icons.Plus /></button>
+                  </div>
+                )}
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                  {aisles.map(aisle => (
+                    <button key={aisle} onClick={() => toggleAisle(aisle)} className={`px-3 py-3 rounded-lg border-2 transition flex items-center gap-2 ${selectedAisles.includes(aisle) ? 'border-indigo-600 bg-indigo-50 text-indigo-700' : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'}`}>
+                      <span className={selectedAisles.includes(aisle) ? 'text-indigo-600' : 'text-gray-400'}>{getAisleIcon(aisle)}</span>
+                      <span className="text-sm">{aisle}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {selectedAisles.length > 0 && (
+                <div className="bg-white rounded-xl p-6 shadow-sm mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-4">Ordre des rayons ({selectedAisles.length})</label>
+                  <div className="space-y-2">
+                    {selectedAisles.map((aisle, index) => (
+                      <div key={aisle} className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
+                        <span className="text-gray-600 font-medium w-8">{index + 1}.</span>
+                        <span className="text-gray-600">{getAisleIcon(aisle)}</span>
+                        <span className="flex-1 text-gray-800">{aisle}</span>
+                        <div className="flex gap-1">
+                          <button onClick={() => moveAisle(index, 'up')} disabled={index === 0} className={`p-1 rounded ${index === 0 ? 'text-gray-300' : 'text-gray-600 hover:bg-gray-200'}`}><Icons.ArrowUp /></button>
+                          <button onClick={() => moveAisle(index, 'down')} disabled={index === selectedAisles.length - 1} className={`p-1 rounded ${index === selectedAisles.length - 1 ? 'text-gray-300' : 'text-gray-600 hover:bg-gray-200'}`}><Icons.ArrowDown /></button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <button onClick={handleSave} className="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition shadow-sm">Enregistrer</button>
+            </div>
+          </div>
+        );
+      }
+
+      function SelectStoreView() {
+        return (
+          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+            <div className="max-w-2xl mx-auto">
+              <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold text-gray-800">Choisir un magasin</h1>
+                <button onClick={() => setView('home')} className="text-gray-600 hover:text-gray-800"><Icons.X /></button>
+              </div>
+              <div className="grid gap-3">
+                {stores.map(store => (
+                  <button key={store.id} onClick={() => { setCurrentStore(store); setView('createList'); }} className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition text-left">
+                    <div className="flex items-center gap-3">
+                      <Icons.Store />
+                      <div>
+                        <h3 className="font-medium text-gray-800 text-lg">{store.name}</h3>
+                        <p className="text-sm text-gray-500">{store.aisles.length} rayons</p>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      function CreateListView() {
+        const [listItems, setListItems] = useState([]);
+        const [inputValue, setInputValue] = useState('');
+        const [suggestions, setSuggestions] = useState([]);
+        const [selectedAisle, setSelectedAisle] = useState('');
+        const [showNewProductForm, setShowNewProductForm] = useState(false);
+
+        const handleInputChange = (value) => {
+          setInputValue(value);
+          if (value.trim()) {
+            const filtered = products.filter(p => p.name.toLowerCase().includes(value.toLowerCase()));
+            setSuggestions(filtered);
+            setShowNewProductForm(filtered.length === 0);
+          } else {
+            setSuggestions([]);
+            setShowNewProductForm(false);
+          }
+        };
+
+        const addProduct = (product, aisle) => {
+          const exists = listItems.some(item => item.product === product);
+          if (!exists) setListItems([...listItems, { product, aisle, checked: false }]);
+          setInputValue('');
+          setSuggestions([]);
+          setSelectedAisle('');
+          setShowNewProductForm(false);
+        };
+
+        const addNewProduct = () => {
+          if (!inputValue.trim() || !selectedAisle) { alert('Veuillez entrer un produit et sélectionner un rayon'); return; }
+          const productName = inputValue.trim();
+          const newProduct = { id: Date.now(), name: productName, aisle: selectedAisle };
+          setProducts([...products, newProduct]);
+          const exists = listItems.some(item => item.product === productName);
+          if (!exists) setListItems([...listItems, { product: productName, aisle: selectedAisle, checked: false }]);
+          setInputValue('');
+          setSuggestions([]);
+          setSelectedAisle('');
+          setShowNewProductForm(false);
+        };
+
+        const removeItem = (index) => setListItems(listItems.filter((_, i) => i !== index));
+
+        const saveList = () => {
+          if (listItems.length === 0) { alert('Ajoutez au moins un produit'); return; }
+          const sortedItems = [...listItems].sort((a, b) => {
+            const indexA = currentStore.aisles.indexOf(a.aisle);
+            const indexB = currentStore.aisles.indexOf(b.aisle);
+            return indexA - indexB;
+          });
+          const newList = { id: Date.now(), storeId: currentStore.id, storeName: currentStore.name, date: new Date().toLocaleDateString('fr-FR'), items: sortedItems };
+          setLists([...lists, newList]);
+          setView('home');
+        };
+
+        return (
+          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 pb-8">
+            <div className="max-w-2xl mx-auto">
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-800">Nouvelle Liste</h1>
+                  <p className="text-sm text-gray-600">{currentStore.name}</p>
+                </div>
+                <button onClick={() => setView('home')} className="text-gray-600 hover:text-gray-800"><Icons.X /></button>
+              </div>
+              <div className="bg-white rounded-xl p-6 shadow-sm mb-4">
+                <input type="text" value={inputValue} onChange={(e) => handleInputChange(e.target.value)} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent mb-2" placeholder="Ajouter un produit..." />
+                {suggestions.length > 0 && (
+                  <div className="border border-gray-200 rounded-lg mt-2 max-h-48 overflow-y-auto">
+                    {suggestions.map(product => (
+                      <button key={product.id} onClick={() => addProduct(product.name, product.aisle)} className="w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0 flex items-center gap-2">
+                        <span className="text-gray-500">{getAisleIcon(product.aisle)}</span>
+                        <div className="flex-1">
+                          <div className="font-medium text-gray-800">{product.name}</div>
+                          <div className="text-sm text-gray-500">{product.aisle}</div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {showNewProductForm && (
+                  <div className="mt-3 p-4 bg-amber-50 rounded-lg border border-amber-200">
+                    <p className="text-sm text-gray-700 mb-3">Produit non trouvé. Sélectionnez un rayon :</p>
+                    <select value={selectedAisle} onChange={(e) => setSelectedAisle(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-2">
+                      <option value="">Choisir un rayon</option>
+                      {currentStore.aisles.map(aisle => <option key={aisle} value={aisle}>{aisle}</option>)}
+                    </select>
+                    <button onClick={addNewProduct} className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">Créer et ajouter</button>
+                  </div>
+                )}
+              </div>
+              {listItems.length > 0 && (
+                <div className="bg-white rounded-xl p-6 shadow-sm mb-4">
+                  <h3 className="font-medium text-gray-700 mb-3">Produits ({listItems.length})</h3>
+                  <div className="space-y-2">
+                    {listItems.map((item, index) => (
+                      <div key={index} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+                        <div className="flex items-center gap-2 flex-1">
+                          <span className="text-gray-500">{getAisleIcon(item.aisle)}</span>
+                          <div>
+                            <div className="font-medium text-gray-800">{item.product}</div>
+                            <div className="text-sm text-gray-500">{item.aisle}</div>
+                          </div>
+                        </div>
+                        <button onClick={() => removeItem(index)} className="text-red-500 hover:text-red-700"><Icons.Trash2 /></button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {listItems.length > 0 && (
+                <button onClick={saveList} className="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition shadow-sm">Créer la liste</button>
+              )}
+            </div>
+          </div>
+        );
+      }
+
+      function ViewListView() {
+        const toggleItem = (index) => {
+          const updatedItems = [...currentList.items];
+          updatedItems[index].checked = !updatedItems[index].checked;
+          const updatedList = { ...currentList, items: updatedItems };
+          setLists(lists.map(l => l.id === currentList.id ? updatedList : l));
+          setCurrentList(updatedList);
+        };
+
+        const deleteList = () => {
+          if (window.confirm('Supprimer cette liste ?')) {
+            const listId = currentList.id;
+            setLists(prevLists => prevLists.filter(l => l.id !== listId));
+            setCurrentList(null);
+            setView('home');
+          }
+        };
+
+        const allChecked = currentList.items.every(item => item.checked) && currentList.items.length > 0;
+        const groupedItems = {};
+        currentList.items.forEach(item => {
+          if (!groupedItems[item.aisle]) groupedItems[item.aisle] = [];
+          groupedItems[item.aisle].push(item);
+        });
+
+        return (
+          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 pb-8">
+            <div className="max-w-2xl mx-auto">
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-800">{currentList.storeName}</h1>
+                  <p className="text-sm text-gray-600">{currentList.date}</p>
+                </div>
+                <button onClick={() => setView('home')} className="text-gray-600 hover:text-gray-800"><Icons.X /></button>
+              </div>
+              {allChecked && (
+                <div className="bg-green-50 border-2 border-green-500 rounded-xl p-4 mb-4 text-center">
+                  <p className="text-green-800 font-medium mb-3">🎉 Liste terminée !</p>
+                  <button onClick={deleteList} className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">Supprimer la liste</button>
+                </div>
+              )}
+              <div className="space-y-4">
+                {Object.entries(groupedItems).map(([aisle, items]) => (
+                  <div key={aisle} className="bg-white rounded-xl p-5 shadow-sm">
+                    <h3 className="font-semibold text-gray-700 mb-3 pb-2 border-b border-gray-200 flex items-center gap-2">
+                      <span className="text-indigo-600">{getAisleIcon(aisle)}</span>
+                      {aisle}
+                    </h3>
+                    <div className="space-y-2">
+                      {items.map((item) => {
+                        const globalIndex = currentList.items.indexOf(item);
+                        return (
+                          <label key={globalIndex} className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" checked={item.checked} onChange={() => toggleItem(globalIndex)} className="w-5 h-5 text-green-600 rounded focus:ring-2 focus:ring-green-500" />
+                            <span className={`flex-1 ${item.checked ? 'line-through text-gray-400' : 'text-gray-800'}`}>{item.product}</span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button onClick={deleteList} className="w-full mt-6 bg-red-500 text-white py-3 rounded-lg font-medium hover:bg-red-600 transition shadow-sm flex items-center justify-center gap-2">
+                <Icons.Trash2 />
+                Supprimer la liste
+              </button>
+            </div>
+          </div>
+        );
+      }
+
+      return null;
+    }
+
+    ReactDOM.render(<ShoppingListApp />, document.getElementById('root'));
+  </script>
+</body>
+</html>
