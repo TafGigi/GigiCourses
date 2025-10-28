@@ -50,7 +50,7 @@
       }
 
       .drag-over {
-        border-top: 3px solid #4f46e5;
+        border-top: 3px solid #64748b;
       }
 
       .bottom-nav {
@@ -58,8 +58,8 @@
         bottom: 0;
         left: 0;
         right: 0;
-        background: white;
-        border-top: 1px solid #e5e7eb;
+        background: #faf8f5;
+        border-top: 1px solid #d4d1cc;
         z-index: 50;
         box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
         padding-bottom: env(safe-area-inset-bottom, 12px);
@@ -72,12 +72,42 @@
       }
 
       .nav-item.active {
-        color: #4f46e5;
+        color: #475569;
       }
     </style>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: '#f8fafc',
+                100: '#f1f5f9',
+                200: '#e2e8f0',
+                300: '#cbd5e1',
+                400: '#94a3b8',
+                500: '#64748b',
+                600: '#475569',
+                700: '#334155',
+                800: '#1e293b',
+                900: '#0f172a',
+              },
+              cream: {
+                50: '#fdfdfb',
+                100: '#faf8f5',
+                200: '#f5f3ed',
+                300: '#edeae0',
+                400: '#d4d1cc',
+                500: '#a8a49d',
+              }
+            }
+          }
+        }
+      }
+    </script>
 
     <!-- React & ReactDOM -->
     <script
@@ -471,7 +501,10 @@
           "Pain Industriel",
           "Crème Et Beurre",
           "Surgelés",
-          "Compotes Et PQ"
+          "Compotes Et PQ",
+          "Desserts",
+          "Vin",
+          "Soupes et Conserves"
         ]);
         const [lists, setLists] = useState([]);
         const [recipes, setRecipes] = useState([]);
@@ -620,7 +653,7 @@
             </div>
 
             {stores.length === 0 ? (
-              <div className="bg-white rounded-xl p-8 text-center shadow-sm">
+              <div className="bg-cream-50 rounded-xl p-8 text-center shadow-sm">
                 <p className="text-gray-600 mb-4">
                   Créez d'abord un magasin dans l'onglet Magasins
                 </p>
@@ -628,7 +661,7 @@
             ) : (
               <>
                 {stores.length > 0 && (
-                  <div className="bg-white rounded-xl p-5 shadow-sm mb-6">
+                  <div className="bg-cream-50 rounded-xl p-5 shadow-sm mb-6">
                     <h3 className="font-semibold text-gray-700 mb-4">
                       Créer une nouvelle liste
                     </h3>
@@ -640,9 +673,9 @@
                             setCurrentStore(store);
                             setView("createList");
                           }}
-                          className="w-full p-4 bg-gradient-to-r from-indigo-50 to-blue-50 hover:from-indigo-100 hover:to-blue-100 rounded-lg text-left flex items-center justify-between transition group"
+                          className="w-full p-4 bg-gradient-to-r from-cream-100 to-cream-200 hover:from-indigo-100 hover:to-blue-100 rounded-lg text-left flex items-center justify-between transition group"
                         >
-                          <span className="font-medium text-indigo-700 group-hover:text-indigo-800">
+                          <span className="font-medium text-primary-700 group-hover:text-primary-800">
                             {store.name}
                           </span>
                           <Icons.Plus />
@@ -667,7 +700,7 @@
                             setCurrentList(list);
                             setView("viewList");
                           }}
-                          className="w-full bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition text-left"
+                          className="w-full bg-cream-50 rounded-xl p-5 shadow-sm hover:shadow-md transition text-left"
                         >
                           <div className="flex justify-between items-start mb-3">
                             <div>
@@ -682,7 +715,7 @@
                           </div>
                           <div className="w-full bg-gray-200 rounded-full h-2.5">
                             <div
-                              className="bg-gradient-to-r from-green-400 to-green-600 h-2.5 rounded-full transition-all duration-300"
+                              className="bg-gradient-to-r from-primary-400 to-primary-600 h-2.5 rounded-full transition-all duration-300"
                               style={{ width: `${progress}%` }}
                             ></div>
                           </div>
@@ -691,7 +724,7 @@
                     })}
                   </div>
                 ) : (
-                  <div className="bg-white rounded-xl p-8 text-center shadow-sm">
+                  <div className="bg-cream-50 rounded-xl p-8 text-center shadow-sm">
                     <p className="text-gray-500">Aucune liste créée</p>
                   </div>
                 )}
@@ -710,7 +743,7 @@
                   setEditingStore({ name: "", aisles: [] });
                   setView("editStore");
                 }}
-                className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-5 py-2.5 rounded-2xl flex items-center gap-2 font-medium shadow-lg hover:shadow-xl hover:from-indigo-600 hover:to-purple-700 transition"
+                className="bg-gradient-to-r from-primary-500 to-primary-700 text-white px-5 py-2.5 rounded-2xl flex items-center gap-2 font-medium shadow-lg hover:shadow-xl hover:from-primary-600 hover:to-primary-700 transition"
               >
                 <Icons.Plus />
                 <span>Créer un magasin</span>
@@ -722,7 +755,7 @@
                 {stores.map((store) => (
                   <div
                     key={store.id}
-                    className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition"
+                    className="bg-cream-50 rounded-xl p-5 shadow-sm hover:shadow-md transition"
                   >
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
@@ -736,7 +769,7 @@
                           {store.aisles.slice(0, 5).map((aisle, index) => (
                             <span
                               key={index}
-                              className="text-xs bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full"
+                              className="text-xs bg-primary-100 text-primary-700 px-3 py-1 rounded-full"
                             >
                               {aisle}
                             </span>
@@ -754,7 +787,7 @@
                             setEditingStore(store);
                             setView("editStore");
                           }}
-                          className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 p-2 rounded-lg transition"
+                          className="text-primary-600 hover:text-primary-700 hover:bg-primary-100 p-2 rounded-lg transition"
                         >
                           <Icons.Edit2 />
                         </button>
@@ -770,7 +803,7 @@
                 ))}
               </div>
             ) : (
-              <div className="bg-white rounded-xl p-8 text-center shadow-sm">
+              <div className="bg-cream-50 rounded-xl p-8 text-center shadow-sm">
                 <p className="text-gray-500 mb-2">Aucun magasin créé</p>
                 <p className="text-sm text-gray-400">
                   Créez votre premier magasin pour commencer
@@ -787,15 +820,15 @@
               <h2 className="text-2xl font-semibold text-gray-700">Articles</h2>
               <button
                 onClick={() => setView("manageProducts")}
-                className="bg-gradient-to-r from-green-500 to-teal-600 text-white px-5 py-2.5 rounded-2xl flex items-center gap-2 font-medium shadow-lg hover:shadow-xl transition"
+                className="bg-gradient-to-r from-primary-500 to-primary-700 text-white px-5 py-2.5 rounded-2xl flex items-center gap-2 font-medium shadow-lg hover:shadow-xl transition"
               >
                 <Icons.Edit2 />
                 <span>Gérer</span>
               </button>
             </div>
 
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 mb-6 border border-blue-200">
-              <p className="text-sm text-blue-900">
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 mb-6 border border-cream-400">
+              <p className="text-sm text-primary-900">
                 <strong>{products.length}</strong> article(s) · <strong>{aisles.length}</strong> rayon(s)
               </p>
             </div>
@@ -811,11 +844,11 @@
               .map(([aisle, aisleProducts]) => (
                 <details
                   key={aisle}
-                  className="bg-white rounded-xl shadow-sm overflow-hidden mb-3"
+                  className="bg-cream-50 rounded-xl shadow-sm overflow-hidden mb-3"
                 >
-                  <summary className="cursor-pointer p-5 font-semibold text-gray-700 hover:bg-gray-50 flex justify-between items-center transition">
+                  <summary className="cursor-pointer p-5 font-semibold text-gray-700 hover:bg-white flex justify-between items-center transition">
                     <span className="flex items-center gap-2">
-                      <span className="text-indigo-600">{getAisleIcon(aisle)}</span>
+                      <span className="text-primary-600">{getAisleIcon(aisle)}</span>
                       {aisle}
                     </span>
                     <span className="text-sm font-normal text-gray-500">
@@ -856,7 +889,7 @@
                     setCurrentRecipe(null);
                     setView("editRecipe");
                   }}
-                  className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-5 py-2.5 rounded-2xl flex items-center gap-2 font-medium shadow-lg hover:shadow-xl transition"
+                  className="bg-gradient-to-r from-primary-500 to-primary-700 text-white px-5 py-2.5 rounded-2xl flex items-center gap-2 font-medium shadow-lg hover:shadow-xl transition"
                 >
                   <Icons.Plus />
                   <span>Nouvelle</span>
@@ -871,12 +904,12 @@
                     return (
                       <div
                         key={recipe.id}
-                        className="bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden"
+                        className="bg-cream-50 rounded-xl shadow-sm hover:shadow-md transition overflow-hidden"
                       >
                         {/* Header cliquable */}
                         <button
                           onClick={() => toggleRecipe(recipe.id)}
-                          className="w-full p-5 text-left flex justify-between items-center hover:bg-gray-50 transition"
+                          className="w-full p-5 text-left flex justify-between items-center hover:bg-white transition"
                         >
                           <div className="flex-1">
                             <h3 className="text-lg font-semibold text-gray-800 mb-1">
@@ -906,9 +939,9 @@
                                 <div className="space-y-2">
                                   <h4 className="text-sm font-medium text-gray-700 mb-3">Ingrédients :</h4>
                                   {recipe.items.map((item, idx) => (
-                                    <div key={idx} className="flex items-center justify-between py-2 px-3 bg-orange-50 rounded-lg">
+                                    <div key={idx} className="flex items-center justify-between py-2 px-3 bg-primary-50 rounded-lg">
                                       <span className="text-sm text-gray-800">{item.product}</span>
-                                      <span className="text-sm text-orange-700 font-medium">
+                                      <span className="text-sm text-primary-700 font-medium">
                                         {item.quantity > 1 ? `x${item.quantity}` : ''}
                                       </span>
                                     </div>
@@ -925,7 +958,7 @@
                                   setCurrentRecipe(recipe);
                                   setView("editRecipe");
                                 }}
-                                className="flex-1 bg-orange-100 text-orange-700 py-2 rounded-lg hover:bg-orange-200 transition flex items-center justify-center gap-2"
+                                className="flex-1 bg-primary-100 text-primary-700 py-2 rounded-lg hover:bg-primary-200 transition flex items-center justify-center gap-2"
                               >
                                 <Icons.Edit2 />
                                 <span>Modifier</span>
@@ -950,7 +983,7 @@
                   })}
                 </div>
               ) : (
-                <div className="bg-white rounded-xl p-8 text-center shadow-sm">
+                <div className="bg-cream-50 rounded-xl p-8 text-center shadow-sm">
                   <p className="text-gray-500 mb-2">Aucune recette créée</p>
                   <p className="text-sm text-gray-400">
                     Créez des recettes pour ajouter rapidement plusieurs articles à vos listes
@@ -968,7 +1001,7 @@
               Comment utiliser Gigi
             </h2>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm space-y-6">
+            <div className="bg-cream-50 rounded-xl p-6 shadow-sm space-y-6">
               <div>
                 <div className="flex items-center gap-3 mb-3">
                   <div className="bg-indigo-100 p-3 rounded-xl">
@@ -984,7 +1017,7 @@
 
               <div>
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="bg-blue-100 p-3 rounded-xl">
+                  <div className="bg-primary-100 p-3 rounded-xl">
                     <Icons.Store />
                   </div>
                   <h3 className="text-lg font-semibold text-gray-800">Magasins</h3>
@@ -997,7 +1030,7 @@
 
               <div>
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="bg-green-100 p-3 rounded-xl">
+                  <div className="bg-primary-100 p-3 rounded-xl">
                     <Icons.Package />
                   </div>
                   <h3 className="text-lg font-semibold text-gray-800">Articles</h3>
@@ -1009,7 +1042,7 @@
 
               <div>
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="bg-orange-100 p-3 rounded-xl">
+                  <div className="bg-primary-100 p-3 rounded-xl">
                     <Icons.ChefHat />
                   </div>
                   <h3 className="text-lg font-semibold text-gray-800">Recettes</h3>
@@ -1021,8 +1054,8 @@
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-5 mt-6 border border-indigo-200">
-              <p className="text-sm text-indigo-900">
+            <div className="bg-gradient-to-r from-cream-100 to-cream-200 rounded-xl p-5 mt-6 border border-primary-200">
+              <p className="text-sm text-primary-900">
                 💡 <strong>Astuce :</strong> Ajoutez l'application à votre écran d'accueil pour y accéder comme une vraie app !
               </p>
             </div>
@@ -1084,9 +1117,9 @@
 
         if (loading) {
           return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+            <div className="min-h-screen bg-gradient-to-br from-cream-50 to-cream-200 flex items-center justify-center">
               <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
                 <p className="text-gray-600">Chargement...</p>
               </div>
             </div>
@@ -1096,7 +1129,7 @@
         if (view === "home") {
           return (
             <>
-              <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-100 p-6 pb-20">
+              <div className="min-h-screen bg-gradient-to-br from-cream-50 via-cream-100 to-cream-200 p-6 pb-20">
                 <div className="max-w-4xl mx-auto">
                   {/* HEADER */}
                   <div className="flex flex-col items-center justify-center mb-10">
@@ -1267,7 +1300,7 @@
           };
 
           return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 pb-8">
+            <div className="min-h-screen bg-gradient-to-br from-cream-50 to-cream-200 p-4 pb-8">
               <div className="max-w-2xl mx-auto">
                 <div className="flex justify-between items-center mb-6">
                   <h1 className="text-2xl font-bold text-gray-800">
@@ -1282,7 +1315,7 @@
                     <Icons.X />
                   </button>
                 </div>
-                <div className="bg-white rounded-xl p-6 shadow-sm mb-4">
+                <div className="bg-cream-50 rounded-xl p-6 shadow-sm mb-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Nom du magasin
                   </label>
@@ -1290,18 +1323,18 @@
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     placeholder="Ex: Leclerc Centre-ville"
                   />
                 </div>
-                <div className="bg-white rounded-xl p-6 shadow-sm mb-4">
+                <div className="bg-cream-50 rounded-xl p-6 shadow-sm mb-4">
                   <div className="flex justify-between items-center mb-4">
                     <label className="text-sm font-medium text-gray-700">
                       Rayons disponibles
                     </label>
                     <button
                       onClick={() => setShowAddAisle(!showAddAisle)}
-                      className="text-indigo-600 text-sm font-medium hover:text-indigo-700"
+                      className="text-primary-600 text-sm font-medium hover:text-primary-700"
                     >
                       + Ajouter un rayon
                     </button>
@@ -1313,12 +1346,12 @@
                         value={newAisle}
                         onChange={(e) => setNewAisle(e.target.value)}
                         onKeyPress={(e) => e.key === "Enter" && addNewAisle()}
-                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        className="flex-1 px-4 py-2 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                         placeholder="Nom du nouveau rayon"
                       />
                       <button
                         onClick={addNewAisle}
-                        className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
+                        className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition"
                       >
                         <Icons.Plus />
                       </button>
@@ -1331,14 +1364,14 @@
                         onClick={() => toggleAisle(aisle)}
                         className={`px-3 py-3 rounded-lg border-2 transition flex items-center gap-2 ${
                           selectedAisles.includes(aisle)
-                            ? "border-indigo-600 bg-indigo-50 text-indigo-700"
+                            ? "border-primary-600 bg-primary-100 text-primary-700"
                             : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"
                         }`}
                       >
                         <span
                           className={
                             selectedAisles.includes(aisle)
-                              ? "text-indigo-600"
+                              ? "text-primary-600"
                               : "text-gray-400"
                           }
                         >
@@ -1350,7 +1383,7 @@
                   </div>
                 </div>
                 {selectedAisles.length > 0 && (
-                  <div className="bg-white rounded-xl p-6 shadow-sm mb-4">
+                  <div className="bg-cream-50 rounded-xl p-6 shadow-sm mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-4">
                       Ordre des rayons ({selectedAisles.length}) - Drag & Drop
                       ou flèches
@@ -1364,7 +1397,7 @@
                           onDragOver={(e) => handleDragOver(e, index)}
                           onDrop={(e) => handleDrop(e, index)}
                           onDragEnd={handleDragEnd}
-                          className={`flex items-center gap-2 bg-gray-50 p-3 rounded-lg cursor-move hover:bg-gray-100 transition ${
+                          className={`flex items-center gap-2 bg-white p-3 rounded-lg cursor-move hover:bg-gray-100 transition ${
                             draggedIndex === index ? "dragging" : ""
                           }`}
                         >
@@ -1409,7 +1442,7 @@
                 )}
                 <button
                   onClick={handleSave}
-                  className="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition shadow-sm"
+                  className="w-full bg-primary-600 text-white py-3 rounded-lg font-medium hover:bg-primary-700 transition shadow-sm"
                 >
                   Enregistrer
                 </button>
@@ -1420,7 +1453,7 @@
 
         function SelectStoreView() {
           return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+            <div className="min-h-screen bg-gradient-to-br from-cream-50 to-cream-200 p-4">
               <div className="max-w-2xl mx-auto">
                 <div className="flex justify-between items-center mb-6">
                   <h1 className="text-2xl font-bold text-gray-800">
@@ -1441,7 +1474,7 @@
                         setCurrentStore(store);
                         setView("createList");
                       }}
-                      className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition text-left"
+                      className="bg-cream-50 rounded-xl p-5 shadow-sm hover:shadow-md transition text-left"
                     >
                       <div className="flex items-center gap-3">
                         <Icons.Store />
@@ -1586,7 +1619,7 @@
           };
 
           return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 pb-8">
+            <div className="min-h-screen bg-gradient-to-br from-cream-50 to-cream-200 p-4 pb-8">
               <div className="max-w-2xl mx-auto">
                 <div className="flex justify-between items-center mb-6">
                   <div>
@@ -1607,7 +1640,7 @@
                 {listItems.length > 0 && (
                   <button
                     onClick={saveList}
-                    className="w-full mb-4 overflow-hidden bg-gradient-to-r from-emerald-500 to-green-600 text-white py-3 rounded-2xl font-semibold shadow-md hover:shadow-lg hover:from-emerald-600 hover:to-green-700 transition-all duration-200"
+                    className="w-full mb-4 overflow-hidden bg-gradient-to-r from-primary-500 to-primary-700 text-white py-3 rounded-2xl font-semibold shadow-md hover:shadow-lg hover:from-primary-600 hover:to-primary-800 transition-all duration-200"
                   >
                     <div className="flex items-center justify-center gap-2">
                       <Icons.Plus className="w-5 h-5" />
@@ -1616,12 +1649,12 @@
                   </button>
                 )}
 
-                <div className="bg-white rounded-xl p-6 shadow-sm mb-4">
+                <div className="bg-cream-50 rounded-xl p-6 shadow-sm mb-4">
                   <input
                     type="text"
                     value={inputValue}
                     onChange={(e) => handleInputChange(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent mb-2"
+                    className="w-full px-4 py-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 mb-2"
                     placeholder="Ajouter un produit..."
                   />
                   {suggestions.length > 0 && (
@@ -1632,7 +1665,7 @@
                           onClick={() =>
                             addProduct(product.name, product.aisle)
                           }
-                          className="w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0 flex items-center gap-2"
+                          className="w-full px-4 py-3 text-left hover:bg-white border-b border-gray-100 last:border-b-0 flex items-center gap-2"
                         >
                           <span className="text-gray-500">
                             {getAisleIcon(product.aisle)}
@@ -1650,14 +1683,14 @@
                     </div>
                   )}
                   {showNewProductForm && (
-                    <div className="mt-3 p-4 bg-amber-50 rounded-lg border border-amber-200">
+                    <div className="mt-3 p-4 bg-cream-200 rounded-lg border border-cream-400">
                       <p className="text-sm text-gray-700 mb-3">
                         Produit non trouvé. Sélectionnez un rayon :
                       </p>
                       <select
                         value={selectedAisle}
                         onChange={(e) => setSelectedAisle(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-2"
+                        className="w-full px-4 py-2 border-2 border-gray-400 rounded-lg mb-2"
                       >
                         <option value="">Choisir un rayon</option>
                         {currentStore.aisles.map((aisle) => (
@@ -1668,7 +1701,7 @@
                       </select>
                       <button
                         onClick={addNewProduct}
-                        className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition"
+                        className="w-full bg-primary-600 text-white py-2 rounded-lg hover:bg-primary-700 transition"
                       >
                         Créer et ajouter
                       </button>
@@ -1678,10 +1711,10 @@
 
                 {/* AJOUTER DES RECETTES */}
                 {recipes.length > 0 && (
-                  <div className="bg-white rounded-xl p-6 shadow-sm mb-4">
+                  <div className="bg-cream-50 rounded-xl p-6 shadow-sm mb-4">
                     <button
                       onClick={() => setShowRecipes(!showRecipes)}
-                      className="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white py-3 rounded-lg flex items-center justify-center gap-2 font-medium hover:from-orange-600 hover:to-red-700 transition"
+                      className="w-full bg-gradient-to-r from-primary-500 to-primary-700 text-white py-3 rounded-lg flex items-center justify-center gap-2 font-medium hover:from-primary-600 hover:to-primary-800 transition"
                     >
                       <Icons.ChefHat />
                       <span>{showRecipes ? "Masquer les recettes" : "Ajouter une recette"}</span>
@@ -1693,12 +1726,12 @@
                           <button
                             key={recipe.id}
                             onClick={() => addRecipe(recipe)}
-                            className="w-full p-4 bg-orange-50 hover:bg-orange-100 rounded-lg text-left transition border border-orange-200"
+                            className="w-full p-4 bg-primary-50 hover:bg-primary-100 rounded-lg text-left transition border border-primary-200"
                           >
-                            <div className="font-medium text-orange-900 mb-1">
+                            <div className="font-medium text-primary-900 mb-1">
                               {recipe.name}
                             </div>
-                            <div className="text-sm text-orange-700">
+                            <div className="text-sm text-primary-700">
                               {recipe.items?.length || 0} ingrédient(s)
                             </div>
                           </button>
@@ -1709,7 +1742,7 @@
                 )}
 
                 {listItems.length > 0 && (
-                  <div className="bg-white rounded-xl p-6 shadow-sm mb-4">
+                  <div className="bg-cream-50 rounded-xl p-6 shadow-sm mb-4">
                     <h3 className="font-medium text-gray-700 mb-3">
                       Produits ({listItems.length})
                     </h3>
@@ -1717,7 +1750,7 @@
                       {listItems.map((item, index) => (
                         <div
                           key={index}
-                          className="flex items-center justify-between bg-gray-50 p-3 rounded-lg"
+                          className="flex items-center justify-between bg-white p-3 rounded-lg"
                         >
                           <div className="flex items-center gap-2 flex-1">
                             <span className="text-gray-500">
@@ -1730,7 +1763,7 @@
                               <div className="text-sm text-gray-500">
                                 {item.aisle}
                                 {item.recipeOrigin && (
-                                  <span className="ml-2 text-xs text-orange-600">
+                                  <span className="ml-2 text-xs text-primary-600">
                                     • de {item.recipeOrigin}
                                   </span>
                                 )}
@@ -1738,7 +1771,7 @@
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            <div className="flex items-center gap-2 bg-white border border-gray-300 rounded-lg">
+                            <div className="flex items-center gap-2 bg-white border-2 border-gray-400 rounded-lg">
                               <button
                                 onClick={() => updateQuantity(index, -1)}
                                 className="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-l-lg"
@@ -1802,7 +1835,7 @@
           });
 
           return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 pb-8">
+            <div className="min-h-screen bg-gradient-to-br from-cream-50 to-cream-200 p-4 pb-8">
               <div className="max-w-2xl mx-auto">
                 <div className="flex justify-between items-center mb-6">
                   <div>
@@ -1819,8 +1852,8 @@
                   </button>
                 </div>
                 {allChecked && (
-                  <div className="bg-green-50 border-2 border-green-500 rounded-xl p-4 mb-4 text-center">
-                    <p className="text-green-800 font-medium text-lg">
+                  <div className="bg-primary-50 border-2 border-primary-500 rounded-xl p-4 mb-4 text-center">
+                    <p className="text-primary-800 font-medium text-lg">
                       🎉 Liste terminée !
                     </p>
                   </div>
@@ -1829,10 +1862,10 @@
                   {Object.entries(groupedItems).map(([aisle, items]) => (
                     <div
                       key={aisle}
-                      className="bg-white rounded-xl p-5 shadow-sm"
+                      className="bg-cream-50 rounded-xl p-5 shadow-sm"
                     >
                       <h3 className="font-semibold text-gray-700 mb-3 pb-2 border-b border-gray-200 flex items-center gap-2">
-                        <span className="text-indigo-600">
+                        <span className="text-primary-600">
                           {getAisleIcon(aisle)}
                         </span>
                         {aisle}
@@ -1843,13 +1876,13 @@
                           return (
                             <label
                               key={globalIndex}
-                              className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer"
+                              className="flex items-center gap-3 p-3 rounded-lg hover:bg-white cursor-pointer"
                             >
                               <input
                                 type="checkbox"
                                 checked={item.checked}
                                 onChange={() => toggleItem(globalIndex)}
-                                className="w-5 h-5 text-green-600 rounded focus:ring-2 focus:ring-green-500"
+                                className="w-5 h-5 text-primary-600 rounded focus:ring-2 focus:ring-primary-500"
                               />
                               <span
                                 className={`flex-1 ${
@@ -1878,7 +1911,7 @@
                   <div className="mt-6">
                     <button
                       onClick={deleteList}
-                      className="w-full bg-green-600 text-white py-4 rounded-xl font-semibold hover:bg-green-700 transition shadow-lg text-lg"
+                      className="w-full bg-primary-600 text-white py-4 rounded-xl font-semibold hover:bg-primary-700 transition shadow-lg text-lg"
                     >
                       Supprimer la liste
                     </button>
@@ -1984,7 +2017,7 @@
           };
 
           return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 pb-8">
+            <div className="min-h-screen bg-gradient-to-br from-cream-50 to-cream-200 p-4 pb-8">
               <div className="max-w-2xl mx-auto">
                 <div className="flex items-center justify-between mb-6">
                   <h1 className="text-2xl font-bold text-gray-800">
@@ -2001,14 +2034,14 @@
                 <div className="space-y-3 mb-6">
                   <button
                     onClick={() => setShowAddProduct(!showAddProduct)}
-                    className="w-full bg-green-600 text-white px-4 py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-green-700 transition shadow-sm"
+                    className="w-full bg-primary-600 text-white px-4 py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-primary-700 transition shadow-sm"
                   >
                     <Icons.Plus />
                     Ajouter un article
                   </button>
 
                   {showAddProduct && (
-                    <div className="bg-white rounded-xl p-5 shadow-sm">
+                    <div className="bg-cream-50 rounded-xl p-5 shadow-sm">
                       <h3 className="font-medium text-gray-700 mb-3">
                         Nouvel article
                       </h3>
@@ -2017,13 +2050,13 @@
                         value={newProductName}
                         onChange={(e) => setNewProductName(e.target.value)}
                         onKeyPress={(e) => e.key === "Enter" && addNewProduct()}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-3 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border-2 border-gray-400 rounded-lg mb-3 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                         placeholder="Nom de l'article"
                       />
                       <select
                         value={newProductAisle}
                         onChange={(e) => setNewProductAisle(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-3 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border-2 border-gray-400 rounded-lg mb-3 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                       >
                         <option value="">Sélectionner un rayon</option>
                         {aisles.map((aisle) => (
@@ -2035,7 +2068,7 @@
                       <div className="flex gap-2">
                         <button
                           onClick={addNewProduct}
-                          className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition"
+                          className="flex-1 bg-primary-600 text-white py-2 rounded-lg hover:bg-primary-700 transition"
                         >
                           Ajouter
                         </button>
@@ -2051,14 +2084,14 @@
 
                   <button
                     onClick={() => setShowAddAisle(!showAddAisle)}
-                    className="w-full bg-indigo-600 text-white px-4 py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-indigo-700 transition shadow-sm"
+                    className="w-full bg-primary-600 text-white px-4 py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-primary-700 transition shadow-sm"
                   >
                     <Icons.Plus />
                     Ajouter un rayon
                   </button>
 
                   {showAddAisle && (
-                    <div className="bg-white rounded-xl p-5 shadow-sm">
+                    <div className="bg-cream-50 rounded-xl p-5 shadow-sm">
                       <h3 className="font-medium text-gray-700 mb-3">
                         Nouveau rayon
                       </h3>
@@ -2067,13 +2100,13 @@
                         value={newAisleName}
                         onChange={(e) => setNewAisleName(e.target.value)}
                         onKeyPress={(e) => e.key === "Enter" && addNewAisle()}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border-2 border-gray-400 rounded-lg mb-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                         placeholder="Nom du rayon"
                       />
                       <div className="flex gap-2">
                         <button
                           onClick={addNewAisle}
-                          className="flex-1 bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
+                          className="flex-1 bg-primary-600 text-white py-2 rounded-lg hover:bg-primary-700 transition"
                         >
                           Ajouter
                         </button>
@@ -2089,8 +2122,8 @@
                 </div>
 
                 <div className="space-y-4">
-                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-                    <p className="text-sm text-blue-800">
+                  <div className="bg-cream-100 border border-cream-400 rounded-xl p-4">
+                    <p className="text-sm text-primary-800">
                       <strong>{products.length}</strong> article(s) ·{" "}
                       <strong>{aisles.length}</strong> rayon(s)
                     </p>
@@ -2103,7 +2136,7 @@
                     return (
                       <div
                         key={aisle}
-                        className="bg-white rounded-xl p-5 shadow-sm"
+                        className="bg-cream-50 rounded-xl p-5 shadow-sm"
                       >
                         {isEditing ? (
                           <div className="mb-3 pb-2 border-b border-gray-200">
@@ -2113,14 +2146,14 @@
                               value={editAisleName}
                               onChange={(e) => setEditAisleName(e.target.value)}
                               onKeyPress={(e) => e.key === "Enter" && renameAisle(aisle)}
-                              className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                              className="w-full px-4 py-2 border-2 border-gray-400 rounded-lg mb-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                               placeholder="Nouveau nom"
                               autoFocus
                             />
                             <div className="flex gap-2">
                               <button
                                 onClick={() => renameAisle(aisle)}
-                                className="flex-1 bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
+                                className="flex-1 bg-primary-600 text-white py-2 rounded-lg hover:bg-primary-700 transition"
                               >
                                 Enregistrer
                               </button>
@@ -2138,7 +2171,7 @@
                         ) : (
                           <div className="flex items-center justify-between mb-3 pb-2 border-b border-gray-200">
                             <h3 className="font-semibold text-gray-700 flex items-center gap-2">
-                              <span className="text-indigo-600">
+                              <span className="text-primary-600">
                                 {getAisleIcon(aisle)}
                               </span>
                               {aisle}
@@ -2158,7 +2191,7 @@
                                   setEditingAisle(aisle);
                                   setEditAisleName(aisle);
                                 }}
-                                className="text-indigo-600 hover:text-indigo-700 transition p-2"
+                                className="text-primary-600 hover:text-primary-700 transition p-2"
                                 title="Renommer le rayon"
                               >
                                 <Icons.Edit2 />
@@ -2180,7 +2213,7 @@
                               .map((product) => (
                                 <div
                                   key={product.id}
-                                  className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50"
+                                  className="flex items-center justify-between p-3 rounded-lg hover:bg-white"
                                 >
                                   <span className="text-gray-800">
                                     {product.name}
@@ -2204,7 +2237,7 @@
                   })}
 
                   {aisles.length === 0 && (
-                    <div className="bg-white rounded-xl p-8 shadow-sm text-center">
+                    <div className="bg-cream-50 rounded-xl p-8 shadow-sm text-center">
                       <div className="text-gray-400 mb-3 flex justify-center">
                         <Icons.Package />
                       </div>
@@ -2296,7 +2329,7 @@
 
           return (
             <>
-              <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 p-6 pb-24">
+              <div className="min-h-screen bg-gradient-to-br from-cream-50 via-cream-100 to-cream-200 p-6 pb-24">
                 <div className="max-w-3xl mx-auto">
                   {/* HEADER */}
                   <div className="flex items-center justify-between mb-8">
@@ -2317,7 +2350,7 @@
                   </div>
 
                   {/* NOM DE LA RECETTE */}
-                  <div className="bg-white rounded-xl p-5 shadow-sm mb-6">
+                  <div className="bg-cream-50 rounded-xl p-5 shadow-sm mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Nom de la recette
                     </label>
@@ -2326,12 +2359,12 @@
                       value={recipeName}
                       onChange={(e) => setRecipeName(e.target.value)}
                       placeholder="Ex: Pâtes Carbonara"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     />
                   </div>
 
                   {/* RECHERCHE D'INGRÉDIENTS */}
-                  <div className="bg-white rounded-xl p-5 shadow-sm mb-6">
+                  <div className="bg-cream-50 rounded-xl p-5 shadow-sm mb-6">
                     <h3 className="font-medium text-gray-700 mb-3">Ajouter des ingrédients</h3>
                     <div className="relative">
                       <input
@@ -2339,7 +2372,7 @@
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         placeholder="Rechercher un article..."
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                        className="w-full pl-10 pr-4 py-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                       />
                       <div className="absolute left-3 top-3.5 text-gray-400">
                         <Icons.Search />
@@ -2352,7 +2385,7 @@
                           <button
                             key={product.id}
                             onClick={() => addIngredient(product)}
-                            className="w-full px-4 py-3 text-left hover:bg-orange-50 border-b border-gray-100 last:border-b-0 transition"
+                            className="w-full px-4 py-3 text-left hover:bg-primary-50 border-b border-gray-100 last:border-b-0 transition"
                           >
                             <div className="font-medium text-gray-800">{product.name}</div>
                             <div className="text-sm text-gray-500">{product.aisle}</div>
@@ -2364,7 +2397,7 @@
 
                   {/* LISTE DES INGRÉDIENTS */}
                   {recipeItems.length > 0 && (
-                    <div className="bg-white rounded-xl p-5 shadow-sm mb-6">
+                    <div className="bg-cream-50 rounded-xl p-5 shadow-sm mb-6">
                       <h3 className="font-medium text-gray-700 mb-4">
                         Ingrédients ({recipeItems.length})
                       </h3>
@@ -2372,14 +2405,14 @@
                         {recipeItems.map((item, index) => (
                           <div
                             key={index}
-                            className="flex items-center justify-between bg-orange-50 p-4 rounded-lg"
+                            className="flex items-center justify-between bg-primary-50 p-4 rounded-lg"
                           >
                             <div className="flex-1">
                               <div className="font-medium text-gray-800">{item.product}</div>
                               <div className="text-sm text-gray-600">{item.aisle}</div>
                             </div>
                             <div className="flex items-center gap-3">
-                              <div className="flex items-center gap-1 bg-white border border-gray-300 rounded-lg">
+                              <div className="flex items-center gap-1 bg-white border-2 border-gray-400 rounded-lg">
                                 <button
                                   onClick={() => updateQuantity(index, -1)}
                                   className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-l-lg transition"
@@ -2413,7 +2446,7 @@
                   <div className="flex gap-3">
                     <button
                       onClick={saveRecipe}
-                      className="flex-1 bg-gradient-to-r from-orange-500 to-red-600 text-white py-4 rounded-xl font-medium hover:from-orange-600 hover:to-red-700 transition shadow-lg hover:shadow-xl"
+                      className="flex-1 bg-gradient-to-r from-primary-500 to-primary-700 text-white py-4 rounded-xl font-medium hover:from-primary-600 hover:to-primary-800 transition shadow-lg hover:shadow-xl"
                     >
                       {isEditing ? "Enregistrer les modifications" : "Créer la recette"}
                     </button>
